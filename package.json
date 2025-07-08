@@ -1,0 +1,28 @@
+{
+  "version": "0.0.1",
+  "private": true,
+  "engines": {
+    "node": "22.16.0"
+  },
+  "scripts": {
+    "generate:secret": "node -e console.log(require('node:crypto').randomBytes(255).toString('base64')) > secret.txt",
+    "dev": "nodemon main.ts",
+    "build": "tsc",
+    "start": "node ./dist/main.js"
+  },
+  "dependencies": {
+    "dotenv": "^17.0.1",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "naughty-util": "^0.4.2",
+    "pg": "^8.16.3"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.0.10",
+    "@types/pg": "^8.15.4",
+    "nodemon": "^3.1.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  }
+}
