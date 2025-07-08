@@ -8,7 +8,8 @@
     "generate:secret": "node -e console.log(require('node:crypto').randomBytes(255).toString('base64')) > secret.txt",
     "dev": "nodemon main.ts",
     "build": "tsc",
-    "start": "node ./dist/main.js"
+    "start": "node ./dist/main.js",
+    "test": "nodemon ./test/index.ts"
   },
   "dependencies": {
     "dotenv": "^17.0.1",
@@ -19,6 +20,7 @@
   },
   "devDependencies": {
     "@types/express": "^5.0.3",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.0.10",
     "@types/pg": "^8.15.4",
     "nodemon": "^3.1.10",
