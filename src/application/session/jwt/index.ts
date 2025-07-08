@@ -1,5 +1,3 @@
-
-
 type Payload = Record<string, any>;
 
 export default (context: any) => {
@@ -20,9 +18,15 @@ export default (context: any) => {
         { expiresIn: config.session.duration.refresh },
       );
     },
-    verify(token: string) {
-      const { _type } = jwt.decode(token);
-      return jwt.verify(token, _type);
+    async verify(token: string) {
+      try {
+        const { _type } = jwt.decode(token);
+        const key = config.session.secret[_type];
+        await jwt.verify(token, key);
+        return true;
+      } catch {
+        return false;
+      }
     },
     decode(token: string) {
       return jwt.decode(token);

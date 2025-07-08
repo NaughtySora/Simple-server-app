@@ -57,7 +57,7 @@ export default (context: any) => {
         });
       });
     },
-    compare(password: string, hashed: string) {
+    compare(password: string, hashed: string): Promise<boolean> {
       const { params, salt, hash } = deserializeHash(hashed);
       return new Promise((resolve, reject) => {
         const callback = (err: CallbackError, hashedPassword: Buffer) => {

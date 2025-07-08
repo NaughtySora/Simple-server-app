@@ -1,5 +1,3 @@
-
-
 export default ({ app, }: any) => [
   async () => {
     app.logger.log("controller");
