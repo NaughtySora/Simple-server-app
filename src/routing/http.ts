@@ -1,4 +1,4 @@
-export default (modules: any) => {
+export default (modules: Record<string, Modules>) => {
   return [
     {
       path: "/project:id",
@@ -12,7 +12,7 @@ export default (modules: any) => {
     },
     {
       path: "/user/create",
-      method: "post",
+      method: "get",
       modules: modules.user.create
     },
     {
@@ -20,7 +20,7 @@ export default (modules: any) => {
       method: "get",
       modules: modules.user.get
     },
-  ].sort((a: any, b: any) => {
+  ].sort((a: { path: string }, b: { path: string }) => {
     const aPath = a.path.includes(":");
     const bPath = b.path.includes(":");
     if (aPath === bPath) return 0;

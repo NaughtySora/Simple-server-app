@@ -1,6 +1,7 @@
-export default (context: any) => ({
-  test() {
-    return context.storage.query("select now()");
-  },
-  context,
-});
+export default ({ query, }: RepositoryContext) => {
+  return {
+    async create(credentials: Credentials) {
+      return (await query("select now()")).rows[0];
+    },
+  }
+};

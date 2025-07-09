@@ -1,4 +1,4 @@
-export default ({ app, }: any) => [
+export default ({ app, }: DomainContext) => [
   async () => {
     app.logger.log("controller");
   },
