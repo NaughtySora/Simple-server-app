@@ -27,7 +27,9 @@ export default ({ npm, config, app }: any) => (routes: any) => {
                 "Content-Type": "application/json",
                 ...headers,
               });
-              res.end(data);
+              res.end(JSON.stringify(data));
+            } else {
+              throw new Error("wrong response format"); // change later
             }
           } catch (e: any) {
             const code = e?.code;

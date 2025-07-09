@@ -16,7 +16,7 @@ const loadEssentials = async (): Promise<Essentials> => {
   const essentials = await Promise.all([
     loadNPM(paths.package, {
       omit: ["dotenv"],
-      rename: { "jsonwebtoken": "jwt" }
+      rename: { "jsonwebtoken": "jwt" },
     }),
     loadModule(paths.config),
     loadModule(paths.utils),
@@ -30,7 +30,7 @@ const loadEssentials = async (): Promise<Essentials> => {
   };
 };
 
-const loadStorage = async (context: any) => {
+const loadStorage = async (context: Essentials & { app: Application }) => {
   const storages = await loadDir(paths.storage, context);
   const entries = Object.entries(storages);
   const api = {} as any;
@@ -38,16 +38,16 @@ const loadStorage = async (context: any) => {
   for (const entry of entries) {
     const name = entry[0];
     if (name !== use) continue;
-    const bootstrap = entry[1];
+    const bootstrap = entry[1] as any;
     const repository = path.resolve(paths.storage, name, "repository");
-    api[name] = await loadModule(repository, { context, bootstrap });
+    api[name] = await loadModule(repository, { context, ...bootstrap });
   }
   return { api: api[use], ...storages[use] };
 };
 
 const loadLayers = async (essentials: Essentials) => {
-  const app = await loadDir(paths.application, essentials);
-  const context = { ...essentials, app };
+  const app = await loadDir(paths.application, essentials) as Application;
+  const context = { ...essentials, app } as Essentials & { app: Application };
   const layers = await Promise.all([
     loadStorage(context),
     loadDir(paths.transport, context),
@@ -59,7 +59,7 @@ const loadLayers = async (essentials: Essentials) => {
   };
 };
 
-const loadDomainLayers = async (context: any) => {
+const loadDomainLayers = async (context: Essentials & { app: Application, storage: Layers["storage"]["api"] }) => {
   const root = paths.domain;
   const services = await loadDir(
     path.resolve(root, "services"),
@@ -75,9 +75,9 @@ const loadDomainLayers = async (context: any) => {
 
 const application = async () => {
   const essentials = await loadEssentials();
-  const { storage, app, transport } = await loadLayers(essentials);
-  const modules = await loadDomainLayers({ ...essentials, storage: storage.api, app, });
-  const routing = await loadModule(paths.routing, modules);
+  const { storage, app, transport } = await loadLayers(essentials) as Layers;
+  const modules = await loadDomainLayers({ ...essentials, storage: storage.api, app, }) as Modules;
+  const routing = await loadModule(paths.routing, modules) as PathFinder;
   return { transport, routing, storage, essentials, app };
 };
 

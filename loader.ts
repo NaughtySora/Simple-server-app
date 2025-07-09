@@ -85,5 +85,5 @@ export const loadNode = async (modules: string[]) => {
     Object.fromEntries(
       modules.map((name, i) => [name, node[i]])
     )
-  );
+  ) as any;
 }

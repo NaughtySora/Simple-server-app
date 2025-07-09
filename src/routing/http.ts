@@ -12,7 +12,7 @@ export default (modules: any) => {
     },
     {
       path: "/user/create",
-      method: "post",
+      method: "get",
       modules: modules.user.create
     },
     {
