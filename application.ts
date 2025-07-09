@@ -30,7 +30,7 @@ const loadEssentials = async (): Promise<Essentials> => {
   };
 };
 
-const loadStorage = async (context: Essentials & { app: Application }) => {
+const loadStorage = async (context: LayerContext) => {
   const storages = await loadDir(paths.storage, context);
   const entries = Object.entries(storages);
   const api = {} as any;
@@ -47,7 +47,7 @@ const loadStorage = async (context: Essentials & { app: Application }) => {
 
 const loadLayers = async (essentials: Essentials) => {
   const app = await loadDir(paths.application, essentials) as Application;
-  const context = { ...essentials, app } as Essentials & { app: Application };
+  const context = { ...essentials, app } as LayerContext;
   const layers = await Promise.all([
     loadStorage(context),
     loadDir(paths.transport, context),
@@ -59,7 +59,7 @@ const loadLayers = async (essentials: Essentials) => {
   };
 };
 
-const loadDomainLayers = async (context: Essentials & { app: Application, storage: Layers["storage"]["api"] }) => {
+const loadDomainLayers = async (context: LayerContext & { storage: Layers["storage"]["api"] }) => {
   const root = paths.domain;
   const services = await loadDir(
     path.resolve(root, "services"),

@@ -1,4 +1,4 @@
-export default ({ services, app }: any) => {
+export default ({ services, app, }: DomainContext) => {
   return [
     async () => { },
     async () => {

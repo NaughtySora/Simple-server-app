@@ -8,6 +8,7 @@ export default () => {
 
     },
     query(...args: any) {
+      
     },
   }
 }

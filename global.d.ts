@@ -161,12 +161,15 @@ declare global {
   type ServicesContext = Essentials & {
     app: Application;
     storage: StorageApi;
-  }
+  };
 
-  type StorageContext = Essentials & { app: Application };
+  type LayerContext = Essentials & { app: Application };
 
+  type DomainServices = Record<string, any>;
+  type DomainContext = Exclude<LayerContext, "config"> & { services: DomainServices };
   type Pool = Pool;
   type QueryParameters = Parameters<Query>;
+  type RepositoryContext = { context: LayerContext } & Layers["storage"];
 }
 
 export { }

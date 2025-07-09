@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 
-export default ({ npm, config, app }: any) => (routes: any) => {
+export default ({ npm, config, app }: LayerContext) => (routes: PathFinder["http"]) => {
   const express = npm.express;
   const PORT = config.server.http.port;
   const listen = app.logger.log.bind(null, `http server started on port ${PORT}`);
@@ -10,7 +10,7 @@ export default ({ npm, config, app }: any) => (routes: any) => {
     async start() {
       const server = express();
       server.listen(PORT, listen);
-      server.on("error", (error: Error) => {
+      server.on("error", (error) => {
         app.logger.error("Express server error", error);
       });
       for (const route of routes) {
@@ -43,7 +43,7 @@ export default ({ npm, config, app }: any) => (routes: any) => {
             }
           }
         }
-        server[method].call(server, path, listener);
+        server[method as keyof typeof server].call(server, path, listener);
       }
     },
     async stop() { },

@@ -1,4 +1,4 @@
-export default ({ npm, app, config }: StorageContext) => {
+export default ({ npm, app, config }: LayerContext) => {
   const { Pool } = npm.pg;
   const pg = config.storage.pg;
   const logger = app.logger;
