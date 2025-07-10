@@ -7,7 +7,7 @@ const main = async () => {
   await storage.start();
   const http = transport.http(routing.http);
   await http.start();
-
+  
   const stop = async (code = 0, message?: Error) => {
     await storage.stop();
     await http.stop();
@@ -18,12 +18,8 @@ const main = async () => {
 
   const error = stop.bind(null, 1);
   const exit = stop.bind(null, 0);
-
   process.on("uncaughtException", error);
   process.on("SIGINT", exit);
-  process.on("SIGTERM", exit);
-  process.on('SIGUSR1', exit);
-  process.on('SIGUSR2', exit);
 };
 
 main();

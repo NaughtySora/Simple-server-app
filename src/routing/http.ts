@@ -12,7 +12,7 @@ export default (modules: Record<string, Modules>) => {
     },
     {
       path: "/user/create",
-      method: "get",
+      method: "post",
       modules: modules.user.create
     },
     {
