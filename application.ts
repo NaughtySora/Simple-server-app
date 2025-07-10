@@ -1,4 +1,4 @@
-import { loadDir, loadModule, loadNode, loadNPM } from "./loader";
+import { loadDir, loadModule, loadNode, loadNPM, LoadFiles } from "./loader";
 import path from "node:path";
 
 const paths = {
@@ -16,10 +16,13 @@ const loadEssentials = async (): Promise<Essentials> => {
   const essentials = await Promise.all([
     loadNPM(paths.package, {
       omit: ["dotenv"],
-      rename: { "jsonwebtoken": "jwt" },
+      rename: {
+        "jsonwebtoken": "jwt",
+        "json-schema": "jsonschema"
+      },
     }),
     loadModule(paths.config),
-    loadModule(paths.utils),
+    LoadFiles(paths.utils),
   ]);
   const config = essentials[1];
   return {

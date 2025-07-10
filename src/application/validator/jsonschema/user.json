@@ -1,0 +1,31 @@
+{
+  "credentials": {
+    "$id": "user-create",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "User credentials",
+    "type": "object",
+    "properties": {
+      "password": {
+        "type": "string",
+        "description": "password must be at least 8 symbols long up to 25, upper, lower, digits, and special symbols",
+        "maxLength": 25,
+        "minLength": 3,
+        "required": true
+      },
+      "email": {
+        "type": "string",
+        "description": "email has to follow RFC 5321 standard",
+        "format": "email",
+        "required": true
+      },
+      "nickname": {
+        "type": "string",
+        "description": "nickname has to be 3-16 characters long, basic Latin alphabet and underscore only",
+        "maxLength": 25,
+        "minLength": 3,
+        "pattern": "^[A-Za-z0-9_]+$",
+        "required": true
+      }
+    }
+  }
+}

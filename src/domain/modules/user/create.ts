@@ -1,10 +1,13 @@
 export default ({ services, app, }: DomainContext) => {
   return [
-    async () => { },
-    async () => {
+    async ({ data }: any) => {
+      console.log({ data });
+      app.validator.user.credentials(data as Credentials);
+      return data;
+    },
+    async (credentials: Credentials) => {
       const token = await app.session.access("asd");
-      console.log(await app.session.decode(token));
-      const data = await services.user.create({});
+      const data = await services.user.create(credentials);
       return data;
     },
   ]

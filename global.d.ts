@@ -1,5 +1,6 @@
 import pg, { Pool, Query } from "@types/pg";
 import jwt from "@types/jsonwebtoken";
+import jsonschema from "@types/json-schema";
 import utils from "naughty-util";
 import express from "express";
 import dotenv from "dotenv";
@@ -21,6 +22,7 @@ import Cluster from "node:cluster";
 import Buffer from "node:buffer";
 import Path from "node:path";
 import Http, { IncomingMessage, ServerResponse } from "node:http";
+import DomainError from "./src/utils/DomainError";
 
 type pool = Pool;
 type Query = Pool["query"];
@@ -79,13 +81,14 @@ interface NPM {
   'naughty-util': typeof utils;
   pg: typeof pg;
   jwt: typeof jwt;
+  jsonschema: typeof jsonschema;
 }
 
 type StorageApi = Record<string, any>; // Types
 
 type HTTPMethods = "get" | "post" | "put" | "patch" | "delete";
 type AsyncCallback = (...args: any[]) => Promise<any>;
-type RouteController = <R extends IncomingMessage, RS extends ServerResponse>(req: R, res: RS) => Promise<any>;
+type RouteController = <R extends IncomingMessage, RS extends ServerResponse>({ req: R, res: RS, data: any }) => Promise<any>;
 type HTTPModules = Record<string, [RouteController, ...AsyncCallback]>;
 type Restartable = { start(): Promise<void>, stop(): Promise<void> };
 
@@ -105,7 +108,7 @@ declare global {
     config: Config;
     npm: NPM;
     utils: {
-      test: {};
+      DomainError: typeof DomainError;
     };
     node: {
       util: typeof Util;
@@ -140,6 +143,11 @@ declare global {
       verify(token: string): Promise<boolean>;
       decode(token: string): Promise<SessionData>;
     };
+    validator: {
+      user: {
+        credentials(credentials: Credentials): void;
+      };
+    },
   }
 
   interface Layers {
@@ -154,6 +162,7 @@ declare global {
   }
 
   type Modules = HTTPModules;
+
   interface PathFinder {
     http: HTTPRoute[];
   }

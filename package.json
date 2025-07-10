@@ -14,11 +14,13 @@
   "dependencies": {
     "dotenv": "^17.0.1",
     "express": "^5.1.0",
+    "json-schema": "^0.4.0",
     "jsonwebtoken": "^9.0.2",
     "naughty-util": "^0.4.2",
     "pg": "^8.16.3"
   },
   "devDependencies": {
+    "@types/json-schema": "^7.0.15",
     "@types/express": "^5.0.3",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.0.10",

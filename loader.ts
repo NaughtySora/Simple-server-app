@@ -36,7 +36,9 @@ export const loadModule = async (dir: string, context = {}) => {
       .then(Module => {
         const defaultExport = Module?.default !== undefined;
         if (defaultExport) {
-          if (typeof Module.default === "function") return Module.default(context);
+          if (typeof Module.default === "function") {
+            return Module.default(context);
+          }
           return Module.default;
         }
         const keys = Object.keys(Module);
@@ -86,4 +88,39 @@ export const loadNode = async (modules: string[]) => {
       modules.map((name, i) => [name, node[i]])
     )
   ) as any;
+};
+
+export const LoadFiles = async (dir: string) => {
+  const files = fs.readdirSync(dir, "utf-8");
+  const promises = [];
+  const names = [];
+  for (const pathname of files) {
+    const ext = path.extname(pathname);
+    if (!ALLOWED_EXTS.includes(ext)) continue;
+    const name = path.basename(pathname, ext);
+    names.push(name);
+    const promise = import(path.resolve(dir, pathname))
+      .then(Module => {
+        const defaultExport = Module?.default !== undefined;
+        if (defaultExport) return Module.default;
+        const keys = Object.keys(Module);
+        const api = {} as any;
+        for (const key of keys) {
+          const entity = Module[key];
+          api[key] = entity;
+        }
+        return api;
+      });
+    promises.push(promise);
+  }
+  const modules = await Promise.all(promises);
+  const api = names.reduce((acc, name, idx) =>
+    (acc[name] = Object.freeze(modules[idx]), acc), {} as any);
+  const rootModule = names.length === 1 && names[0] === "index";
+  if (rootModule) {
+    const root = api.index;
+    if (typeof root === "function") return Object.freeze(root);
+    else return Object.freeze({ ...api.index });
+  }
+  return Object.freeze(api);
 }
