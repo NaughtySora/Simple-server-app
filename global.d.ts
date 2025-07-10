@@ -81,7 +81,7 @@ interface NPM {
   'naughty-util': typeof utils;
   pg: typeof pg;
   jwt: typeof jwt;
-  jsonschema: typeof jsonschema
+  jsonschema: typeof jsonschema;
 }
 
 type StorageApi = Record<string, any>; // Types
@@ -146,7 +146,7 @@ declare global {
     validator: {
       user: {
         credentials(credentials: Credentials): void;
-      }
+      };
     },
   }
 
