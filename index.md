@@ -3,7 +3,7 @@
 
 ## Independent load
 ### [no context]
-- modules
+### modules
 1. node libs
 2. npm libs
 
@@ -19,7 +19,7 @@
 - could use npm, extends npm util functions or more specific ones
 - could use node libs
 
-# App services load
+## App services load
 ### [config] [npm] [utils] [node]
 *app independent - no circle load, no logging in app services*
 ### modules
@@ -34,17 +34,24 @@
 7. mailing
 8. websockets
 
-# Domain services
+## Data Access Layer
+### [config] [npm] [utils] [node] [app]
+### examples
+- storage.user.create(credentials)
+- storage.company.create(data)
+
+## Domain services
 *main logic that uses storage, app services...*
 ### [npm] [utils] [node] [storage] [app services] 
 ### examples
 1. services.user.create(credentials)
+*here we probably use storage.user.create, along with app.security for password and app.session for jwt token*
 2. services.notification.referral.notify(userId)
 3. services.report.cvs.userStatistics(userId)
 4. services.bonuses.check.referral(userId, refereeId)
 5. services.validator.user.credentials(data: any);
 
-# Domain modules
+## Domain modules
 *application core logic, can be different for http, console, testing, websockets, TCP ... output*
 *nothing but domain services calls, thin functions*
 ### [domain services]
@@ -75,3 +82,56 @@ async ({ user, query }) => {
   return {response: smth, meta: { serialize: "json", code: 201, cookie: {} }};
 };
 ```
+
+# Loading contract
+
+### Independent load 
+- node (list): Promise<NodeJSApi>
+- npm (path): Promise<NPM>
+
+### Low dependent load
+- config (path, {node, npm}): Promise<Config>
+- utils (path, {node, npm}) : Promise<Utils>
+
+### App services load
+- app services (path, {config npm utils node}): Promise<AppServices>
+
+### Data Access Layer
+- storage/repository (path, { config npm utils node, app }): Promise<Storage>
+
+### Domain services
+- services (path, { config npm utils node, app }): Promise<DomainServices>
+
+### Domain Modules
+- modules (path, { services, app }): Promise<DomainModules>
+
+# Layers
+
+## Data Access Layer
+*storage, repository, working with persistence*
+### example
+- Postgres
+- MongoDB
+- Redis
+- Prisma, TypeORM...
+
+## Transport
+*i/o from user to user*
+### examples
+- mails
+- http, tcp, websocket
+
+## Application
+*third party services, validators, security/hashing/crypto, session, concrete implementation of transport*
+### examples
+- security -> scrypt hashing, bcrypt hashing
+- session -> jwt
+- http transport -> express, fastify
+- websocket transport -> socket.io, nmp ws lib
+
+## Domain
+*Domain entities and use cases, core application logic*
+*Can be divided to domain services and domain cases*
+### examples
+- User, Project, Report, 
+- creating user account, calculate referral bonus
