@@ -1,6 +1,3 @@
-"use strict";
-
-
 interface DomainErrorOptions {
   code?: number;
   cause?: Error["cause"];
