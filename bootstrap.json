@@ -1,0 +1,40 @@
+{
+  "node": [
+    "util",
+    "url",
+    "timers",
+    "stream",
+    "process",
+    "perf_hooks",
+    "os",
+    "net",
+    "fs",
+    "events",
+    "crypto",
+    "console",
+    "child_process",
+    "cluster",
+    "buffer",
+    "path",
+    "http"
+  ],
+  "npm": {
+    "omit": [
+      "dotenv"
+    ],
+    "rename": {
+      "jsonwebtoken": "jwt",
+      "json-schema": "jsonschema"
+    }
+  },
+  "storage": "main",
+  "application": {
+    "logger": "colorful",
+    "security": "scrypt",
+    "session": "jwt",
+    "validator": "jsonschema"
+  },
+  "transport": {
+    "http": "express"
+  }
+}
