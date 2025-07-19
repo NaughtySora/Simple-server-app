@@ -30,11 +30,15 @@
 3. session
 4. validators
 5. mapping
-6. http
-7. mailing
-8. websockets
 
-## Data Access Layer
+## Transport load
+#### examples
+### [config] [npm] [utils] [node] [app]
+1. http
+2. mailing
+3. websockets
+
+## Data Access load
 ### [config] [npm] [utils] [node] [app]
 ### examples
 - storage.user.create(credentials)
@@ -42,12 +46,12 @@
 
 ## Domain services
 *main logic that uses storage, app services...*
-### [npm] [utils] [node] [storage] [app services] 
+### [npm] [utils] [node] [storage] [app] 
 ### examples
 1. services.user.create(credentials)
 *here we probably use storage.user.create, along with app.security for password and app.session for jwt token*
 2. services.notification.referral.notify(userId)
-3. services.report.cvs.userStatistics(userId)
+3. services.report.user.statistics(userId, "cvs")
 4. services.bonuses.check.referral(userId, refereeId)
 5. services.validator.user.credentials(data: any);
 

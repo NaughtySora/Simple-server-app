@@ -11,5 +11,4 @@ export default {
     maxUses: 7500,
   },
   redis: {},
-  use: "main",
 }

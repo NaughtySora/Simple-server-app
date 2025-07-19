@@ -1,4 +1,4 @@
-import { loadDir, loadModule, loadNode, loadNPM, LoadFiles } from "./loader";
+import { loadDir, loadModule, loadNode, loadNPM } from "./loader";
 import path from "node:path";
 
 const paths = {
@@ -8,86 +8,89 @@ const paths = {
   storage: path.resolve(__dirname, "./src/storage"),
   application: path.resolve(__dirname, "./src/application"),
   transport: path.resolve(__dirname, "./src/transport"),
-  domain: path.resolve(__dirname, "./src/domain"),
+  domain: {
+    services: path.resolve(__dirname, "./src/domain/services"),
+    modules: path.resolve(__dirname, "./src/domain/modules"),
+  },
   routing: path.resolve(__dirname, "./src/routing"),
 };
 
-const loadEssentials = async (): Promise<Essentials> => {
-  const essentials = await Promise.all([
-    loadNPM(paths.package, {
-      omit: ["dotenv"],
-      rename: {
-        "jsonwebtoken": "jwt",
-        "json-schema": "jsonschema"
-      },
-    }),
-    loadModule(paths.config),
-    LoadFiles(paths.utils),
+const independent_load = async (bootstrap: any) => {
+  const [node, npm] = await Promise.all([
+    loadNode(bootstrap.node),
+    loadNPM(paths.package, bootstrap.npm),
   ]);
-  const config = essentials[1];
-  return {
-    npm: essentials[0],
-    config,
-    utils: essentials[2],
-    node: await loadNode(config.node),
-  };
+  return { node, npm };
 };
 
-const loadStorage = async (context: LayerContext) => {
-  const storages = await loadDir(paths.storage, context);
-  const entries = Object.entries(storages);
+const low_dependent_load = async (context: any) => {
+  const [config, utils] = await Promise.all([
+    loadModule(paths.config, context),
+    loadModule(paths.utils, context),
+  ]);
+  return { config, utils };
+};
+
+const app_services_load = async (bootstrap: any, context: any) => {
+  const load = bootstrap.application;
   const api = {} as any;
-  const use = context.config.storage.use;
-  for (const entry of entries) {
-    const name = entry[0];
-    if (name !== use) continue;
-    const bootstrap = entry[1] as any;
-    const repository = path.resolve(paths.storage, name, "repository");
-    api[name] = await loadModule(repository, { context, ...bootstrap });
+  for (const name of Object.keys(load)) {
+    const implementation = load[name];
+    const module_path = path.resolve(paths.application, name, implementation);
+    api[name] = await loadModule(module_path, context);
   }
-  return { api: api[use], ...storages[use] };
+  return api;
 };
 
-const loadLayers = async (essentials: Essentials) => {
-  const app = await loadDir(paths.application, essentials) as Application;
-  const context = { ...essentials, app } as LayerContext;
-  const layers = await Promise.all([
-    loadStorage(context),
-    loadDir(paths.transport, context),
+const transport_load = async (bootstrap: any, context: any) => {
+  const load = bootstrap.transport;
+  const api = {} as any;
+  for (const name of Object.keys(load)) {
+    const implementation = load[name];
+    const module_path = path.resolve(paths.transport, name, implementation);
+    api[name] = await loadModule(module_path, context);
+  }
+  return api;
+};
+
+const data_access_load = async (bootstrap: any, context: any) => {
+  const module_path = path.resolve(paths.storage, bootstrap.storage);
+  return await loadModule(module_path, context);
+};
+
+const services_load = loadDir.bind(null, paths.domain.services)
+const modules_load = loadDir.bind(null, paths.domain.modules);
+const routing_load = loadModule.bind(null, paths.routing);
+
+const application = async (bootstrap: any) => {
+  const independent = await independent_load(bootstrap);
+  const low_dependent = await low_dependent_load(independent);
+  const app = await app_services_load(bootstrap, { ...independent, ...low_dependent });
+  const context = { ...independent, ...low_dependent, app };
+  const [transport, storage] = await Promise.all([
+    transport_load(bootstrap, context),
+    data_access_load(bootstrap, context),
   ]);
+  const services = await services_load({ ...independent, storage, app, utils: low_dependent.utils });
+  const modules = await modules_load(services);
+  const routing = await routing_load(modules);
   return {
+    modules,
+    transport,
+    routing,
+    storage,
     app,
-    storage: layers[0],
-    transport: layers[1],
   };
-};
-
-const loadDomainLayers = async (context: LayerContext & { storage: Layers["storage"]["api"] }) => {
-  const root = paths.domain;
-  const services = await loadDir(
-    path.resolve(root, "services"),
-    context,
-  );
-  const { config, ...rest } = context;
-  const modules = await loadDir(
-    path.resolve(root, "modules"),
-    { services, ...rest },
-  );
-  return modules;
-};
-
-const application = async () => {
-  const essentials = await loadEssentials();
-  const { storage, app, transport } = await loadLayers(essentials) as Layers;
-  const modules = await loadDomainLayers({ ...essentials, storage: storage.api, app, }) as Modules;
-  const routing = await loadModule(paths.routing, modules) as PathFinder;
-  return { transport, routing, storage, essentials, app };
 };
 
 export {
   application,
-  loadLayers,
-  loadDomainLayers,
-  loadStorage,
-  loadEssentials
+  independent_load,
+  low_dependent_load,
+  app_services_load,
+  transport_load,
+  data_access_load,
+  services_load,
+  modules_load,
+  routing_load,
 };

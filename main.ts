@@ -1,13 +1,14 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
+import bootstrap from "./bootstrap.json";
 import { application } from "./application";
 
 const main = async () => {
-  const { storage, transport, routing, app } = await application();
+  const { transport, routing, storage, app } = await application(bootstrap);
   await storage.start();
   const http = transport.http(routing.http);
   await http.start();
-  
+
   const stop = async (code = 0, message?: Error) => {
     await storage.stop();
     await http.stop();

@@ -17,7 +17,7 @@ export const loadNPM = async (packageJSON: string, options: LoadNPMOptions = {})
   const npm = [];
   for (const name of dependencies) {
     const module = Object.freeze(await import(name)
-      .then(lib => lib.default));
+      .then(lib => lib?.default ?? lib));
     npm.push([rename[name as keyof typeof rename] ?? name, module]);
   }
   return Object.freeze(Object.fromEntries(npm));
@@ -33,18 +33,20 @@ export const loadModule = async (dir: string, context = {}) => {
     const name = path.basename(pathname, ext);
     names.push(name);
     const promise = import(path.resolve(dir, pathname))
-      .then(Module => {
-        const defaultExport = Module?.default !== undefined;
+      .then(module => {
+        const defaultExport = module?.default !== undefined;
         if (defaultExport) {
-          if (typeof Module.default === "function") {
-            return Module.default(context);
+          if (typeof module.default === "function") {
+            const isClass = module.default.toString().startsWith("class");
+            if(isClass) return module.default;
+            return module.default(context);
           }
-          return Module.default;
+          return module.default;
         }
-        const keys = Object.keys(Module);
+        const keys = Object.keys(module);
         const api = {} as any;
         for (const key of keys) {
-          const entity = Module[key];
+          const entity = module[key];
           if (entity === "function") api[key] = entity(context);
           api[key] = entity;
         }
@@ -90,37 +92,37 @@ export const loadNode = async (modules: string[]) => {
   ) as any;
 };
 
-export const LoadFiles = async (dir: string) => {
-  const files = fs.readdirSync(dir, "utf-8");
-  const promises = [];
-  const names = [];
-  for (const pathname of files) {
-    const ext = path.extname(pathname);
-    if (!ALLOWED_EXTS.includes(ext)) continue;
-    const name = path.basename(pathname, ext);
-    names.push(name);
-    const promise = import(path.resolve(dir, pathname))
-      .then(Module => {
-        const defaultExport = Module?.default !== undefined;
-        if (defaultExport) return Module.default;
-        const keys = Object.keys(Module);
-        const api = {} as any;
-        for (const key of keys) {
-          const entity = Module[key];
-          api[key] = entity;
-        }
-        return api;
-      });
-    promises.push(promise);
-  }
-  const modules = await Promise.all(promises);
-  const api = names.reduce((acc, name, idx) =>
-    (acc[name] = Object.freeze(modules[idx]), acc), {} as any);
-  const rootModule = names.length === 1 && names[0] === "index";
-  if (rootModule) {
-    const root = api.index;
-    if (typeof root === "function") return Object.freeze(root);
-    else return Object.freeze({ ...api.index });
-  }
-  return Object.freeze(api);
-}
+// export const LoadFiles = async (dir: string) => {
+//   const files = fs.readdirSync(dir, "utf-8");
+//   const promises = [];
+//   const names = [];
+//   for (const pathname of files) {
+//     const ext = path.extname(pathname);
+//     if (!ALLOWED_EXTS.includes(ext)) continue;
+//     const name = path.basename(pathname, ext);
+//     names.push(name);
+//     const promise = import(path.resolve(dir, pathname))
+//       .then(module => {
+//         const defaultExport = module?.default !== undefined;
+//         if (defaultExport) return module.default;
+//         const keys = Object.keys(module);
+//         const api = {} as any;
+//         for (const key of keys) {
+//           const entity = module[key];
+//           api[key] = entity;
+//         }
+//         return api;
+//       });
+//     promises.push(promise);
+//   }
+//   const modules = await Promise.all(promises);
+//   const api = names.reduce((acc, name, idx) =>
+//     (acc[name] = Object.freeze(modules[idx]), acc), {} as any);
+//   const rootModule = names.length === 1 && names[0] === "index";
+//   if (rootModule) {
+//     const root = api.index;
+//     if (typeof root === "function") return Object.freeze(root);
+//     else return Object.freeze({ ...api.index });
+//   }
+//   return Object.freeze(api);
+// }
