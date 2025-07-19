@@ -1,6 +1,6 @@
 import { Request, Response, Express } from "express";
 
-export default ({ npm, config, app, node, utils }: any) => (routes: PathFinder["http"]) => {
+export default ({ npm, config, app, node, utils }: TransportDependencies) => (routes: HTTPRoute[]) => {
   let server: any = null;
   let stopping = false;
   const express = npm.express;
@@ -64,7 +64,7 @@ export default ({ npm, config, app, node, utils }: any) => (routes: PathFinder["
             const headers = Object.assign({}, HEADERS.json, output?.meta?.headers);
             const serializer = serializers(serialize);
             if (!serializer) {
-              throw NetworkError(
+              throw new NetworkError(
                 "Can't process response",
                 { code: CODES.badRequest, details: { serialize } }
               );

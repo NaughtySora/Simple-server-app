@@ -1,21 +1,23 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
 import scrypt from "../src/application/security/scrypt";
-import crypto from "node:crypto";
-import assert from "node:assert";
 import jwt from "jsonwebtoken";
 import jwtSession from "../src/application/session/jwt";
-import { loadModule } from "../loader";
-import path from "node:path";
+import loader from "../loader";
 import validator from "../src/application/validator/jsonschema";
 import jsonschema from "json-schema";
 import DomainError from '../src/utils/DomainError';
 
-const context = { npm: { jsonschema }, utils: { DomainError } } as Essentials;
+import crypto from "node:crypto";
+import assert from "node:assert";
+import test from 'node:test';
+import path from "node:path";
+
+const context = { npm: { jsonschema }, utils: { DomainError } } as any;
 const validate = validator(context);
 
 const security = async () => {
-  const context = { node: { crypto } } as Essentials;
+  const context = { node: { crypto } } as any;
   const api = scrypt(context);
   const password = '12346aA14323!!@#';
   const hash = await api.hash(password);
@@ -24,8 +26,8 @@ const security = async () => {
 };
 
 const session = async () => {
-  const config = await loadModule(path.resolve(__dirname, "../src/config"));
-  const context = { npm: { jwt }, config } as Essentials;
+  const config = await loader.module(path.resolve(__dirname, "../src/config"));
+  const context = { npm: { jwt }, config } as any;
   const api = jwtSession(context);
   const data = { id: crypto.randomUUID(), email: "john.doe@gmail.com" };
   const token = await api.access(data);
@@ -134,11 +136,3 @@ const request = async () => {
   }
 };
 
-const runner = async () => {
-  // await security();
-  // await session();
-  // schema.user.credentials();
-  await request();
-};
-
-runner();

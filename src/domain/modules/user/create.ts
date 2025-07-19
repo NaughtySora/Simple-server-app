@@ -1,4 +1,4 @@
-export default (services: any) => {
+export default (services: DomainServices) => {
   return [
     async ({ body }: any) => {
       console.log({ body });

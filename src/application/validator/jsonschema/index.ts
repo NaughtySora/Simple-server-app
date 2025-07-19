@@ -1,7 +1,7 @@
 
 import userSchema from "./user.json";
 
-export default ({ npm, utils }: Essentials) => {
+export default ({ npm, utils }: ApplicationDependencies) => {
   const jsonschema = npm.jsonschema;
   const DomainError = utils.DomainError;
 

@@ -1,6 +1,6 @@
 type Payload = Record<string, any>;
 
-export default (context: Essentials) => {
+export default (context: ApplicationDependencies) => {
   const jwt = context.npm.jwt;
   const config = context.config;
   const { duration, secret } = config.session;

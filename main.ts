@@ -1,10 +1,9 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
-import bootstrap from "./bootstrap.json";
-import { application } from "./application";
+import { application } from "./bootstrap/application";
 
 const main = async () => {
-  const { transport, routing, storage, app} = await application(bootstrap);
+  const { transport, routing, storage, app } = application();
   await storage.start();
   const http = transport.http(routing.http);
   await http.start();

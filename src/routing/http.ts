@@ -1,4 +1,4 @@
-export default (modules: Record<string, Modules>) => {
+export default (modules: HTTPModules) => {
   return [
     {
       path: "/user/create",

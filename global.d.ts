@@ -23,115 +23,124 @@ import Buffer from "node:buffer";
 import Path from "node:path";
 import Http, { IncomingMessage, ServerResponse } from "node:http";
 import DomainError from "./src/utils/DomainError";
-
-type pool = Pool;
-type Query = Pool["query"];
-
-interface Config {
-  storage: {
-    pg: {
-      host: string;
-      port: number;
-      database: string;
-      user: string;
-      password: string;
-      max: number;
-      idleTimeoutMillis: number;
-      connectionTimeoutMillis: number;
-      maxUses: number;
-    },
-    use: string;
-  },
-  server: {
-    http: {
-      port: number;
-      debug: boolean;
-    }
-  },
-  node: [
-    'util', 'url', 'timers', 'stream', 'process',
-    'perf_hooks', 'os', 'net', 'fs', 'events',
-    'crypto', 'console', 'child_process', 'cluster',
-    'buffer', 'path', "http",
-  ];
-  session: {
-    secret: {
-      refresh: string;
-      access: string;
-    },
-    duration: {
-      refresh: string;
-      access: string;
-    },
-  }
-}
+import NetworkError from "./src/utils/NetworkError";
 
 interface SessionData {
   data: {
     [k: string]: any;
     _type: string;
   };
-  iat: 1752058036;
-  exp: 1752317236;
+  iat: number;
+  exp: number;
 }
 
-interface NPM {
-  dotenv: typeof dotenv;
-  express: typeof express;
-  'naughty-util': typeof utils;
-  pg: typeof pg;
-  jwt: typeof jwt;
-  jsonschema: typeof jsonschema;
+interface HTTPResponseMeta {
+  code?: number;
+  headers?: Record<string, string>;
+  serialize?: "json";
 }
-
-type StorageApi = Record<string, any>; // Types
-
 type HTTPMethods = "get" | "post" | "put" | "patch" | "delete";
-type AsyncCallback = (...args: any[]) => Promise<any>;
+type AsyncCallback = (...args: any[]) => Promise<{ response: any, meta?: HTTPResponseMeta }>;
 type RouteController = <R extends IncomingMessage, RS extends ServerResponse>({ req: R, res: RS, data: any }) => Promise<any>;
-type HTTPModules = Record<string, [RouteController, ...AsyncCallback]>;
+
+
 type Restartable = { start(): Promise<void>, stop(): Promise<void> };
 
-interface HTTPRoute {
-  path: string;
-  method: HTTPMethods | Capitalize<HTTPMethods>;
-  modules: HTTPModules[string];
-  meta?: {
-    code?: number;
-    headers?: Record<string, string>;
-    format?: "json"; // add more later
-  };
-}
+type Query = Pool["query"];
 
 declare global {
-  interface Essentials {
-    config: Config;
-    npm: NPM;
-    utils: {
-      DomainError: typeof DomainError;
-    };
-    node: {
-      util: typeof Util;
-      url: typeof Url;
-      timers: typeof Timers;
-      stream: typeof Stream;
-      process: typeof Process;
-      perf_hooks: typeof perfHooks;
-      os: typeof Os;
-      net: typeof Net;
-      fs: typeof Fs;
-      events: typeof Events;
-      crypto: typeof Crypto;
-      console: typeof Console;
-      child_process: typeof Childprocess;
-      cluster: typeof Cluster;
-      buffer: typeof Buffer;
-      path: typeof Path;
-      http: typeof Http;
-    };
+  interface Postgres {
+    pool: Pool;
+    query: Pool["query"];
+    QueryParameters: Parameters<Query>
   }
 
-  interface Application {
+  interface NodeApi {
+    util: typeof Util;
+    url: typeof Url;
+    timers: typeof Timers;
+    stream: typeof Stream;
+    process: typeof Process;
+    perf_hooks: typeof perfHooks;
+    os: typeof Os;
+    net: typeof Net;
+    fs: typeof Fs;
+    events: typeof Events;
+    crypto: typeof Crypto;
+    console: typeof Console;
+    child_process: typeof Childprocess;
+    cluster: typeof Cluster;
+    buffer: typeof Buffer;
+    path: typeof Path;
+    http: typeof Http;
+  }
+
+  interface Npm {
+    dotenv: typeof dotenv;
+    express: typeof express;
+    'naughty-util': typeof utils;
+    pg: typeof pg;
+    jwt: typeof jwt;
+    jsonschema: typeof jsonschema;
+  }
+
+  interface Independent {
+    npm: Npm;
+    node: NodeApi;
+  }
+
+  interface Config {
+    storage: {
+      pg: {
+        host: string;
+        port: number;
+        database: string;
+        user: string;
+        password: string;
+        max: number;
+        idleTimeoutMillis: number;
+        connectionTimeoutMillis: number;
+        maxUses: number;
+      },
+      use: string;
+    },
+    server: {
+      http: {
+        port: number;
+        debug: boolean;
+      }
+    },
+    node: [
+      'util', 'url', 'timers', 'stream', 'process',
+      'perf_hooks', 'os', 'net', 'fs', 'events',
+      'crypto', 'console', 'child_process', 'cluster',
+      'buffer', 'path', "http",
+    ];
+    session: {
+      secret: {
+        refresh: string;
+        access: string;
+      },
+      duration: {
+        refresh: string;
+        access: string;
+      },
+    }
+  }
+
+  interface Utils {
+    DomainError: typeof DomainError;
+    NetworkError: typeof NetworkError;
+  }
+
+  interface LowDependent {
+    config: Config;
+    utils: Utils;
+  }
+
+  type ApplicationDependencies = LowDependent & Independent;
+
+  interface ApplicationServices {
     logger: Console;
     security: {
       hash(password: string): Promise<string>;
@@ -147,38 +156,49 @@ declare global {
       user: {
         credentials(credentials: Credentials): void;
       };
-    },
-  }
-
-  interface Layers {
-    storage: Restartable & {
-      api: StorageApi;
-      query: Query;
-    };
-    app: Application;
-    transport: {
-      http(routing: PathFinder["http"]): Restartable;
     };
   }
 
-  type Modules = HTTPModules;
+  type TransportDependencies = ApplicationDependencies & { app: ApplicationServices };
 
-  interface PathFinder {
-    http: HTTPRoute[];
-  }
+  type StorageApi = Record<string, any>; // Types
 
-  type ServicesContext = Essentials & {
-    app: Application;
-    storage: StorageApi;
+  interface Storage extends Restartable {
+    api: StorageApi;
+    query: Query;
   };
 
-  type LayerContext = Essentials & { app: Application };
+  interface HTTPRoute {
+    path: string;
+    method: HTTPMethods | Capitalize<HTTPMethods>;
+    modules: DomainModule;
+  }
 
-  type DomainServices = Record<string, any>;
-  type DomainContext = Exclude<LayerContext, "config"> & { services: DomainServices };
-  type Pool = Pool;
-  type QueryParameters = Parameters<Query>;
-  type RepositoryContext = { context: LayerContext } & Layers["storage"];
+  interface Transports {
+    http(routing: HTTPRoute[]): Restartable;
+  };
+
+  type DomainServicesDependencies = {
+    app: ApplicationServices;
+    storage: Storage;
+    utils: LowDependent["utils"];
+  } & Independent;
+
+  interface DomainServices {
+    user: {
+      create(): Promise<any>;
+    };
+  }
+
+  type DomainModule = [RouteController, ...AsyncCallback];
+  type HTTPModules = Record<string, Record<string, DomainModule>>;
+
+  interface DomainServicesModules {
+    user: {
+      create: DomainModule;
+      get: DomainModule;
+    };
+  }
 }
 
 export { }
