@@ -1,13 +1,13 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
-import scrypt from "../src/application/security";
+import scrypt from "../src/application/security/scrypt";
 import crypto from "node:crypto";
 import assert from "node:assert";
 import jwt from "jsonwebtoken";
-import jwtSession from "../src/application/session/jwt/index";
+import jwtSession from "../src/application/session/jwt";
 import { loadModule } from "../loader";
 import path from "node:path";
-import validator from "../src/application/validator/index";
+import validator from "../src/application/validator/jsonschema";
 import jsonschema from "json-schema";
 import DomainError from '../src/utils/DomainError';
 
@@ -124,25 +124,20 @@ const request = async () => {
   try {
     const res = await fetch("http://localhost:3001/user/create", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: "1",
-      }),
+      headers: { "Content-Type": "application/json", },
+      body: JSON.stringify({ email: "1", }),
     });
-    if (res.status > 208) throw new Error(await res.text())
     const data = await res.json();
-    console.log({ data });
+    console.dir(data);
   } catch (e) {
     console.error(e);
   }
 };
 
 const runner = async () => {
-  await security();
-  await session();
-  schema.user.credentials();
+  // await security();
+  // await session();
+  // schema.user.credentials();
   await request();
 };
 

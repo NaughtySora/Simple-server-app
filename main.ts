@@ -4,7 +4,7 @@ import bootstrap from "./bootstrap.json";
 import { application } from "./application";
 
 const main = async () => {
-  const { transport, routing, storage, app } = await application(bootstrap);
+  const { transport, routing, storage, app} = await application(bootstrap);
   await storage.start();
   const http = transport.http(routing.http);
   await http.start();
