@@ -1,6 +1,6 @@
 type CallbackError = Error | null;
 
-export default (context: Essentials) => {
+export default (context: ApplicationDependencies) => {
   const node = context.node;
   const { randomBytes, scrypt, timingSafeEqual } = node.crypto;
 
