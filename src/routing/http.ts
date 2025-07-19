@@ -1,16 +1,6 @@
 export default (modules: Record<string, Modules>) => {
   return [
     {
-      path: "/project:id",
-      method: "get",
-      modules: modules.user.get
-    },
-    {
-      path: "/user/:id/test",
-      method: "get",
-      modules: modules.user.get
-    },
-    {
       path: "/user/create",
       method: "post",
       modules: modules.user.create
