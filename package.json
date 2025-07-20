@@ -9,7 +9,8 @@
     "dev": "nodemon main.ts",
     "build": "tsc",
     "start": "node ./dist/main.js",
-    "test": "nodemon ./test/index.ts",
+    "test-dev": "nodemon ./test/index.ts",
+    "test": "tsc && node .\\dist\\test\\index.js",
     "peek": "nodemon ./test/sandbox.ts"
   },
   "dependencies": {
