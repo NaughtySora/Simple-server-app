@@ -10,7 +10,7 @@
     "build": "tsc",
     "start": "node dist/main.js",
     "test-dev": "nodemon test/index.ts",
-    "test": "tsc && node dist\\test\\index.js",
+    "test": "tsc && node dist/test/index.js",
     "peek": "nodemon test/sandbox.ts"
   },
   "dependencies": {
