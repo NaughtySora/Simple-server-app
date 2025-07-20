@@ -72,13 +72,18 @@ export default ({ npm, config, app, node, utils }: TransportDependencies) => (ro
             res.writeHead(output?.meta?.code ?? CODES.success, headers);
             res.end(await serializer(output.response));
           } catch (e: any) {
-            const code = e?.code;
-            app.logger.error(e);
-            if (code) {
-              res.writeHead(code, HEADERS.json);
-              const error = e?.message ?? codes[code] ?? codes[CODES.badRequest];
-              res.end(JSON.stringify({ error }));
-            } else {
+            try {
+              app.logger.error(e);
+              const code = e?.code;
+              if (code && parseInt(code, 10) <= 511) {
+                res.writeHead(code, HEADERS.json);
+                const error = e?.message ?? codes[code] ?? codes[CODES.badRequest];
+                res.end(JSON.stringify({ error }));
+              } else {
+                res.writeHead(CODES.badRequest, HEADERS.json);
+                res.end(JSON.stringify({ error: codes[CODES.badRequest], }));
+              }
+            } catch {
               res.writeHead(CODES.badRequest, HEADERS.json);
               res.end(JSON.stringify({ error: codes[CODES.badRequest], }));
             }

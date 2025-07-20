@@ -21,5 +21,19 @@ export default ({ npm, app, config }: TransportDependencies) => {
       if (!pool) throw new Error('postgres connection pool down');
       return pool.query.apply(pool, args) as any;
     },
+    async transaction(fn: (client: any) => Promise<any>) {
+      const client = new npm.pg.Client(pg);
+      await client.connect();
+      try {
+        await client.query("BEGIN");
+        await fn(client.query.bind(client));
+        await client.query("COMMIT");
+      } catch (e: any) {
+        await client.query("ROLLBACK");
+        throw e;
+      } finally {
+        await client.end();
+      }
+    },
   };
 };

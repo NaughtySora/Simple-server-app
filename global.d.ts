@@ -161,11 +161,17 @@ declare global {
 
   type TransportDependencies = ApplicationDependencies & { app: ApplicationServices };
 
-  type StorageApi = Record<string, any>; // Types
-
-  interface Storage extends Restartable {
-    api: StorageApi;
-    query: Query;
+  interface StorageApi extends Restartable {
+    repository: {
+      user: {
+        create(query: any, data: Credentials): Promise<any>;
+      };
+      session: {
+        create(query: any, data: { id: string, } & Tokens): Promise<any>;
+      };
+    };
+    query: (...args: any) => Promise<any>;
+    transaction: (...args: any) => Promise<any>;
   };
 
   interface HTTPRoute {
@@ -180,13 +186,18 @@ declare global {
 
   type DomainServicesDependencies = {
     app: ApplicationServices;
-    storage: Storage;
+    storage: StorageApi;
     utils: LowDependent["utils"];
   } & Independent;
 
   interface DomainServices {
     user: {
-      create(): Promise<any>;
+      create(data: Credentials): Promise<any>;
+    };
+    validation: {
+      user: {
+        credentials(data: Credentials): void;
+      }
     };
   }
 

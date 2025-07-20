@@ -1,5 +1,8 @@
 export default (context: Storage) => ({
-  test() {
-    return 1;
+  create(data: any) {
+    return {
+      tokens: data.tokens,
+      id: data.id,
+    };
   },
 })

@@ -3,7 +3,7 @@ const request = async () => {
     const res = await fetch("http://localhost:3001/user/create", {
       method: "POST",
       headers: { "Content-Type": "application/json", },
-      body: JSON.stringify({ email: "1", }),
+      body: JSON.stringify({ email: "testEmail@proton.me", password: "Password!@#", nickname: "myNickname" }),
     });
     const data = await res.json();
     console.dir(data);
@@ -11,3 +11,5 @@ const request = async () => {
     console.error(e);
   }
 };
+
+request();
