@@ -25,7 +25,7 @@ class DomainError extends Error {
   }
 
   toString() {
-    return `${this.name}: ${this.message}`;
+    return this.message;
   }
 }
 

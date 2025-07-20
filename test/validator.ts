@@ -1,11 +1,11 @@
-import validator from "../src/application/validator/jsonschema";
+import validator from "../src/application/validator/jsonschema/user";
 import jsonschema from "json-schema";
 import DomainError from '../src/utils/DomainError';
 import assert from "node:assert";
 import { describe, it } from 'node:test';
 
 const context = { npm: { jsonschema }, utils: { DomainError } } as any;
-const validate = validator(context);
+const user = validator(context);
 
 describe("validator: [jsonschema]", () => {
 
@@ -74,8 +74,8 @@ describe("validator: [jsonschema]", () => {
       for (const test of tests) {
         const data = test.data as any;
         const throws = test.throws;
-        if (throws) assert.throws(() => validate.user.credentials(data))
-        else validate.user.credentials(data);
+        if (throws) assert.throws(() => user.credentials(data))
+        else user.credentials(data);
       }
     });
   });

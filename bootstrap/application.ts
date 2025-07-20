@@ -54,7 +54,9 @@ const transport_load = (bootstrap: any, context: any) => {
 
 const data_access_load = (bootstrap: any, context: any) => {
   const module_path = path.resolve(paths.storage, bootstrap.storage);
-  return loader.module(module_path, context);
+  const root = loader.module(module_path, context);
+  const repository = loader.module(path.resolve(module_path, "repository"));
+  return Object.freeze(Object.assign({}, root, { repository }));
 };
 
 const services_load = loader.dir.bind(null, paths.domain.services)

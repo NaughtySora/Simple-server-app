@@ -1,5 +1,4 @@
-create user dev with password 'aA1234!';
-create database dev owner dev;
-
+CREATE USER dev WITH PASSWORD 'aA1234!';
+CREATE DATABASE dev OWNER dev;
 
 -- psql -U user_name -d db_name -a -f file.sql
