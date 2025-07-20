@@ -8,10 +8,10 @@
     "generate:secret": "node -e console.log(require('node:crypto').randomBytes(255).toString('base64')) > secret.txt",
     "dev": "nodemon main.ts",
     "build": "tsc",
-    "start": "node ./dist/main.js",
-    "test-dev": "nodemon ./test/index.ts",
-    "test": "tsc && node .\\dist\\test\\index.js",
-    "peek": "nodemon ./test/sandbox.ts"
+    "start": "node dist/main.js",
+    "test-dev": "nodemon test/index.ts",
+    "test": "tsc && node dist\\test\\index.js",
+    "peek": "nodemon test/sandbox.ts"
   },
   "dependencies": {
     "dotenv": "^17.0.1",
