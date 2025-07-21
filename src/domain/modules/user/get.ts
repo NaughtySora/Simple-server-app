@@ -1,6 +1,8 @@
 export default (services: DomainServices) => [
-  async () => {},
-  async () => {
-    return 'test';
+  async ({ headers }: any) => {
+    return await services.validation.http.bearer(headers);
+  },
+  async (id: string) => {
+    return { response: await services.user.get(id), };
   },
 ];

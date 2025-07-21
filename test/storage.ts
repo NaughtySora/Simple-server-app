@@ -5,7 +5,7 @@ import { data_access_load } from '../bootstrap/application';
 import pg from 'pg';
 import assert from 'node:assert';
 
-describe.skip('main', async () => {
+describe.skip('main - testing transaction critical section', async () => {
   const PG_CONFIG = {
     host: process.env.TEST_DB_HOST,
     port: parseInt(process.env.TEST_DB_PORT as string, 10),
@@ -52,14 +52,10 @@ describe.skip('main', async () => {
   });
 });
 
-describe('test', async () => {
+describe('test - testing js map vs storage interface compatibility', async () => {
   const { query, transaction, start } = data_access_load(
     { storage: 'test' },
-    {
-      npm: { pg },
-      app: { logger: console },
-      config: {},
-    },
+    { app: { logger: console }, },
   );
   await start();
 

@@ -6,7 +6,7 @@ export default (modules: HTTPModules) => {
       modules: modules.user.create,
     },
     {
-      path: '/',
+      path: '/user/get',
       method: 'get',
       modules: modules.user.get,
     },
