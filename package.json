@@ -11,7 +11,10 @@
     "start": "node dist/main.js",
     "test-dev": "nodemon test/index.ts",
     "test": "tsc && node dist/test/index.js",
-    "peek": "nodemon test/sandbox.ts"
+    "peek": "nodemon test/sandbox.ts",
+    "lint": "npx eslint .",
+    "prettify": "npx prettier . --write",
+    "pretty-check": "npx prettier . --check"
   },
   "dependencies": {
     "dotenv": "^17.0.1",
@@ -22,13 +25,19 @@
     "pg": "^8.16.3"
   },
   "devDependencies": {
-    "@types/json-schema": "^7.0.15",
+    "@eslint/js": "^9.31.0",
     "@types/express": "^5.0.3",
+    "@types/json-schema": "^7.0.15",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.0.10",
     "@types/pg": "^8.15.4",
+    "@typescript-eslint/eslint-plugin": "^8.37.0",
+    "@typescript-eslint/parser": "^8.37.0",
+    "eslint": "^9.31.0",
     "nodemon": "^3.1.10",
+    "prettier": "^3.6.2",
     "ts-node": "^10.9.2",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.37.0"
   }
 }

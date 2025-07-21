@@ -1,7 +1,6 @@
-
 interface NetworkErrorOptions {
   code?: number;
-  cause?: Error["cause"];
+  cause?: Error['cause'];
   details?: any;
 }
 
@@ -9,7 +8,10 @@ class NetworkError extends Error {
   code = 400;
   details = null;
   time = new Date().toISOString();
-  constructor(message: string, { code = 400, cause, details = null }: NetworkErrorOptions = {}) {
+  constructor(
+    message: string,
+    { code = 400, cause, details = null }: NetworkErrorOptions = {},
+  ) {
     super(message, { cause });
     this.code = code;
     this.details = details;
@@ -19,7 +21,7 @@ class NetworkError extends Error {
 
   toJSON() {
     const { cause, name, message, code } = this;
-    const stack = this.stack?.split("\n").map((line) => line.trim());
+    const stack = this.stack?.split('\n').map((line) => line.trim());
     return { cause, name, message, code, stack };
   }
 

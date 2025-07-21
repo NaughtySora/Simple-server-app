@@ -1,6 +1,6 @@
 interface DomainErrorOptions {
   code?: number;
-  cause?: Error["cause"];
+  cause?: Error['cause'];
   details?: any;
 }
 
@@ -9,7 +9,10 @@ class DomainError extends Error {
   code = 400;
   details = null;
   time = new Date().toISOString();
-  constructor(message: string, { code = 400, cause, details = null }: DomainErrorOptions = {}) {
+  constructor(
+    message: string,
+    { code = 400, cause, details = null }: DomainErrorOptions = {},
+  ) {
     super(message, { cause });
     this.name = DomainError.name;
     this.#message = message;

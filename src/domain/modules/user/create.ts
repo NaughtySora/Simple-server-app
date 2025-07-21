@@ -8,5 +8,5 @@ export default (services: DomainServices) => {
       const response = await services.user.create(credentials);
       return { response, meta: { code: 201 } };
     },
-  ]
+  ];
 };

@@ -1,9 +1,9 @@
-import dotenv from "dotenv";
+import dotenv from 'dotenv';
 dotenv.config();
 import { describe, it } from 'node:test';
-import { data_access_load, } from "../bootstrap/application";
-import pg from "pg";
-import assert from "node:assert";
+import { data_access_load } from '../bootstrap/application';
+import pg from 'pg';
+import assert from 'node:assert';
 
 const PG_CONFIG = {
   host: process.env.TEST_DB_HOST,
@@ -17,41 +17,42 @@ const PG_CONFIG = {
   maxUses: 7500,
 };
 
-const { repository, query, transaction, start } = data_access_load({ storage: "main" }, {
-  npm: { pg, },
-  app: { logger: console, },
-  config: { storage: { pg: PG_CONFIG } },
-});
+const { repository, query, transaction, start } = data_access_load(
+  { storage: 'main' },
+  {
+    npm: { pg },
+    app: { logger: console },
+    config: { storage: { pg: PG_CONFIG } },
+  },
+);
 
-describe("main", async () => {
+describe('main', async () => {
   await start();
 
-  await describe("storage: [postgres]", async () => {
-    it("transaction", async () => {
-      await query("CREATE table IF NOT EXISTS a (num int)");
-      await query("CREATE table IF NOT EXISTS b (num int)");
+  await describe('storage: [postgres]', async () => {
+    it('transaction', async () => {
+      await query('CREATE table IF NOT EXISTS a (num int)');
+      await query('CREATE table IF NOT EXISTS b (num int)');
       assert.rejects(async () => {
         await transaction(async (query: any) => {
           await Promise.all([
-            query("INSERT INTO a VALUES($1)", ["text"]),
-            query("INSERT INTO b VALUES($1)", [1]),
+            query('INSERT INTO a VALUES($1)', ['text']),
+            query('INSERT INTO b VALUES($1)', [1]),
           ]);
         });
       });
 
       await transaction(async (query: any) => {
         const [a, b] = await Promise.all([
-          query("SELECT num FROM a"),
-          query("SELECT num FROM b"),
+          query('SELECT num FROM a'),
+          query('SELECT num FROM b'),
         ]);
         assert.strictEqual(a.rows.length, 0);
         assert.ok(a.rows.length === b.rows.length);
       });
     });
   });
-
 });
-
 
 //! explicit client transaction
 // const client = new pg.Client(PG_CONFIG);

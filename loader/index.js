@@ -1,19 +1,18 @@
-"use strict";
+'use strict';
 
-const fs = require("node:fs");
-const { extname, resolve, basename } = require("node:path");
+const fs = require('node:fs');
+const { extname, resolve, basename } = require('node:path');
 
-const ALLOWED_EXTS = [".js", ".json", ".ts"];
+const ALLOWED_EXTS = ['.js', '.json', '.ts'];
 
 const npm = (path, { omit = [], rename = {}, specific = [] }) => {
   const json = require(path);
-  if (typeof json?.dependencies !== "object" || json === null) {
+  if (typeof json?.dependencies !== 'object' || json === null) {
     throw new Error(`Can't find dependencies directive with path ${path}`);
   }
-  const dependencies = [
-    ...Object.keys(json.dependencies),
-    ...specific
-  ].filter(key => !omit.includes(key));
+  const dependencies = [...Object.keys(json.dependencies), ...specific].filter(
+    (key) => !omit.includes(key),
+  );
   const npm = {};
   for (const name of dependencies) {
     const module = require(name);
@@ -27,15 +26,15 @@ const api = (module, context) => {
   const api = {};
   for (const key of keys) {
     const entity = module[key];
-    if (entity === "function") api[key] = entity(context);
+    if (entity === 'function') api[key] = entity(context);
     api[key] = entity;
   }
   return api;
 };
 
 const _default = (module, context) => {
-  if (typeof module.default === "function") {
-    const isClass = module.default.toString().startsWith("class");
+  if (typeof module.default === 'function') {
+    const isClass = module.default.toString().startsWith('class');
     if (isClass) return module.default;
     return module.default(context);
   }
@@ -43,7 +42,7 @@ const _default = (module, context) => {
 };
 
 const _module = (path, context = {}) => {
-  const files = fs.readdirSync(path, "utf-8");
+  const files = fs.readdirSync(path, 'utf-8');
   const result = {};
   let count = 0;
   for (const pathname of files) {
@@ -51,15 +50,15 @@ const _module = (path, context = {}) => {
     if (!ALLOWED_EXTS.includes(ext)) continue;
     const module = require(resolve(path, pathname));
     const isDefaultExport = module?.default !== undefined;
-    result[basename(pathname, ext)] = Object.freeze(isDefaultExport ?
-      _default(module, context) :
-      api(module, context));
+    result[basename(pathname, ext)] = Object.freeze(
+      isDefaultExport ? _default(module, context) : api(module, context),
+    );
     count++;
   }
   const index = result.index;
   const rootModule = count === 1 && index !== undefined;
   if (rootModule) {
-    if (typeof index === "function") return Object.freeze(index);
+    if (typeof index === 'function') return Object.freeze(index);
     else return Object.freeze({ ...index });
   }
   return Object.freeze(result);
@@ -68,8 +67,7 @@ const _module = (path, context = {}) => {
 const dir = (path, context) => {
   const dir = fs.readdirSync(path);
   const app = {};
-  for (const file of dir)
-    app[file] = _module(resolve(path, file), context);
+  for (const file of dir) app[file] = _module(resolve(path, file), context);
   return Object.freeze(app);
 };
 

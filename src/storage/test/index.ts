@@ -1,14 +1,7 @@
-
 export default () => {
   return {
-    async start() {
-
-    },
-    async stop() {
-      
-    },
-    query(...args: any) {
-      
-    },
-  }
-}
+    async start() {},
+    async stop() {},
+    query(...args: any) {},
+  };
+};

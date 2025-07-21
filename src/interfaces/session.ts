@@ -5,5 +5,5 @@ interface Tokens {
 
 interface TokensCreation {
   id: string;
-  tokens: Tokens
+  tokens: Tokens;
 }

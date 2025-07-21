@@ -1,9 +1,6 @@
 {
   "compilerOptions": {
-    "typeRoots": [
-      "./node_modules/@types",
-      "global.d.ts"
-    ],
+    "typeRoots": ["./node_modules/@types", "global.d.ts"],
     "target": "esnext",
     "module": "commonjs",
     "sourceMap": true,
@@ -20,9 +17,9 @@
     "alwaysStrict": true,
     "stripInternal": true,
     "incremental": true,
-    "allowJs": true,
+    "allowJs": true
   },
   "ts-node": {
     "files": true
-  },
+  }
 }

@@ -19,9 +19,7 @@
     "http"
   ],
   "npm": {
-    "omit": [
-      "dotenv"
-    ],
+    "omit": ["dotenv"],
     "rename": {
       "jsonwebtoken": "jwt",
       "json-schema": "jsonschema"

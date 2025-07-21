@@ -1,4 +1,4 @@
-import userSchema from "./schema/user.json";
+import userSchema from './schema/user.json';
 
 export default ({ npm, utils }: ApplicationDependencies) => {
   const jsonschema = npm.jsonschema;

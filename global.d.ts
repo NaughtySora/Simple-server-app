@@ -1,29 +1,29 @@
-import pg, { Pool, Query } from "@types/pg";
-import jwt from "@types/jsonwebtoken";
-import jsonschema from "@types/json-schema";
-import utils from "naughty-util";
-import express from "express";
-import dotenv from "dotenv";
-import jsonwebtoken from "jsonwebtoken";
-import Util from "node:util";
-import Url from "node:url";
-import Timers from "node:timers";
-import Stream from "node:stream";
-import Process from "node:process";
-import perfHooks from "node:perf_hooks";
-import Os from "node:os";
-import Net from "node:net";
-import Fs from "node:fs";
-import Events from "node:events";
-import Crypto from "node:crypto";
-import Console from "node:console";
-import Childprocess from "node:child_process"
-import Cluster from "node:cluster";
-import Buffer from "node:buffer";
-import Path from "node:path";
-import Http, { IncomingMessage, ServerResponse } from "node:http";
-import DomainError from "./src/utils/DomainError";
-import NetworkError from "./src/utils/NetworkError";
+import pg, { Pool, Query } from '@types/pg';
+import jwt from '@types/jsonwebtoken';
+import jsonschema from '@types/json-schema';
+import utils from 'naughty-util';
+import express from 'express';
+import dotenv from 'dotenv';
+import jsonwebtoken from 'jsonwebtoken';
+import Util from 'node:util';
+import Url from 'node:url';
+import Timers from 'node:timers';
+import Stream from 'node:stream';
+import Process from 'node:process';
+import perfHooks from 'node:perf_hooks';
+import Os from 'node:os';
+import Net from 'node:net';
+import Fs from 'node:fs';
+import Events from 'node:events';
+import Crypto from 'node:crypto';
+import Console from 'node:console';
+import Childprocess from 'node:child_process';
+import Cluster from 'node:cluster';
+import Buffer from 'node:buffer';
+import Path from 'node:path';
+import Http, { IncomingMessage, ServerResponse } from 'node:http';
+import DomainError from './src/utils/DomainError';
+import NetworkError from './src/utils/NetworkError';
 
 interface SessionData {
   data: {
@@ -37,22 +37,27 @@ interface SessionData {
 interface HTTPResponseMeta {
   code?: number;
   headers?: Record<string, string>;
-  serialize?: "json";
+  serialize?: 'json';
 }
-type HTTPMethods = "get" | "post" | "put" | "patch" | "delete";
-type AsyncCallback = (...args: any[]) => Promise<{ response: any, meta?: HTTPResponseMeta }>;
-type RouteController = <R extends IncomingMessage, RS extends ServerResponse>({ req: R, res: RS, data: any }) => Promise<any>;
+type HTTPMethods = 'get' | 'post' | 'put' | 'patch' | 'delete';
+type AsyncCallback = (
+  ...args: any[]
+) => Promise<{ response: any; meta?: HTTPResponseMeta }>;
+type RouteController = <R extends IncomingMessage, RS extends ServerResponse>({
+  req: R,
+  res: RS,
+  data: any,
+}) => Promise<any>;
 
+type Restartable = { start(): Promise<void>; stop(): Promise<void> };
 
-type Restartable = { start(): Promise<void>, stop(): Promise<void> };
-
-type Query = Pool["query"];
+type Query = Pool['query'];
 
 declare global {
   interface Postgres {
     pool: Pool;
-    query: Pool["query"];
-    QueryParameters: Parameters<Query>
+    query: Pool['query'];
+    QueryParameters: Parameters<Query>;
   }
 
   interface NodeApi {
@@ -101,31 +106,44 @@ declare global {
         idleTimeoutMillis: number;
         connectionTimeoutMillis: number;
         maxUses: number;
-      },
+      };
       use: string;
-    },
+    };
     server: {
       http: {
         port: number;
         debug: boolean;
-      }
-    },
+      };
+    };
     node: [
-      'util', 'url', 'timers', 'stream', 'process',
-      'perf_hooks', 'os', 'net', 'fs', 'events',
-      'crypto', 'console', 'child_process', 'cluster',
-      'buffer', 'path', "http",
+      'util',
+      'url',
+      'timers',
+      'stream',
+      'process',
+      'perf_hooks',
+      'os',
+      'net',
+      'fs',
+      'events',
+      'crypto',
+      'console',
+      'child_process',
+      'cluster',
+      'buffer',
+      'path',
+      'http',
     ];
     session: {
       secret: {
         refresh: string;
         access: string;
-      },
+      };
       duration: {
         refresh: string;
         access: string;
-      },
-    }
+      };
+    };
   }
 
   interface Utils {
@@ -159,7 +177,9 @@ declare global {
     };
   }
 
-  type TransportDependencies = ApplicationDependencies & { app: ApplicationServices };
+  type TransportDependencies = ApplicationDependencies & {
+    app: ApplicationServices;
+  };
 
   interface StorageApi extends Restartable {
     repository: {
@@ -167,12 +187,12 @@ declare global {
         create(query: any, data: Credentials): Promise<any>;
       };
       session: {
-        create(query: any, data: { id: string, } & Tokens): Promise<any>;
+        create(query: any, data: { id: string } & Tokens): Promise<any>;
       };
     };
     query: (...args: any) => Promise<any>;
     transaction: (...args: any) => Promise<any>;
-  };
+  }
 
   interface HTTPRoute {
     path: string;
@@ -182,12 +202,12 @@ declare global {
 
   interface Transports {
     http(routing: HTTPRoute[]): Restartable;
-  };
+  }
 
   type DomainServicesDependencies = {
     app: ApplicationServices;
     storage: StorageApi;
-    utils: LowDependent["utils"];
+    utils: LowDependent['utils'];
   } & Independent;
 
   interface DomainServices {
@@ -197,7 +217,7 @@ declare global {
     validation: {
       user: {
         credentials(data: Credentials): void;
-      }
+      };
     };
   }
 
@@ -212,4 +232,4 @@ declare global {
   }
 }
 
-export { }
+export {};

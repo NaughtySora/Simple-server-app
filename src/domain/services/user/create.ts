@@ -8,13 +8,15 @@ export default (context: DomainServicesDependencies) => {
     let tokens = null;
     await transaction(async (query: any) => {
       const { id, userId } = await storage.user.create(
-        { email, nickname: credentials.nickname, password, }, query);
+        { email, nickname: credentials.nickname, password },
+        query,
+      );
       const sessionCredentials = { id: userId, email };
       const [access, refresh] = await Promise.all([
         session.access(sessionCredentials),
         session.refresh(sessionCredentials),
       ]);
-      tokens = { access, refresh, };
+      tokens = { access, refresh };
       await storage.session.create({ id, tokens }, query);
     });
     return tokens;
