@@ -1,8 +1,5 @@
-import dotenv from 'dotenv';
-dotenv.config();
 import { describe, it } from 'node:test';
 import { data_access_load, services_load } from '../bootstrap/application';
-import pg from 'pg';
 import assert from 'node:assert';
 import DomainError from '../src/utils/DomainError';
 import jwtSession from '../src/application/session/jwt';
@@ -12,30 +9,12 @@ import jwt from 'jsonwebtoken';
 import scrypt from '../src/application/security/scrypt';
 import crypto from 'node:crypto';
 
-const storage = data_access_load(
-  { storage: 'main' },
-  {
-    npm: { pg },
-    app: { logger: console },
-    config: {
-      storage: {
-        pg: {
-          host: process.env.DB_HOST,
-          port: parseInt(process.env.DB_PORT as string, 10),
-          database: process.env.DB_NAME,
-          user: process.env.DB_USER,
-          password: process.env.DB_PASSWORD,
-          max: 20,
-          idleTimeoutMillis: 1000,
-          connectionTimeoutMillis: 1000,
-          maxUses: 7500,
-        },
-      },
-    },
-  },
-) as StorageApi;
-
 const config = loader.module(path.resolve(__dirname, '../src/config'));
+
+const storage = data_access_load(
+  { storage: 'test' },
+  { app: { logger: console } },
+) as StorageApi;
 
 const app = {
   session: jwtSession({ npm: { jwt }, config } as any),
