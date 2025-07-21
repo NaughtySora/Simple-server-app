@@ -5,4 +5,4 @@ export default (context: Storage) => ({
       id: data.id,
     };
   },
-})
+});

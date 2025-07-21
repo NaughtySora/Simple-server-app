@@ -6,18 +6,14 @@ export default (context: ApplicationDependencies) => {
   const { duration, secret } = config.session;
   return {
     access(data: Payload) {
-      return jwt.sign(
-        { data: { data, _type: 'access' }, },
-        secret.access,
-        { expiresIn: duration.access as any },
-      );
+      return jwt.sign({ data: { data, _type: 'access' } }, secret.access, {
+        expiresIn: duration.access as any,
+      });
     },
     refresh(data: Payload) {
-      return jwt.sign(
-        { data: { data, _type: 'refresh' }, },
-        secret.refresh,
-        { expiresIn: duration.refresh as any },
-      );
+      return jwt.sign({ data: { data, _type: 'refresh' } }, secret.refresh, {
+        expiresIn: duration.refresh as any,
+      });
     },
     async verify(token: string) {
       try {

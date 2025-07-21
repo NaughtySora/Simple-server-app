@@ -1,4 +1,6 @@
 export default (services: DomainServices) => [
-  async () => { },
-  async () => { return "test" },
+  async () => {},
+  async () => {
+    return 'test';
+  },
 ];

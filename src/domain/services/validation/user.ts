@@ -5,12 +5,12 @@ export default (context: DomainServicesDependencies) => {
     credentials(data: Credentials) {
       try {
         validator.user.credentials(data);
-      } catch(cause) {
-        throw new DomainError(
-          "User credentials validation failed",
-          { code: 400, cause },
-        );
+      } catch (cause) {
+        throw new DomainError('User credentials validation failed', {
+          code: 400,
+          cause,
+        });
       }
-    }
-  }
+    },
+  };
 };
