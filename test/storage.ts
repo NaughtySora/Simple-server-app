@@ -67,13 +67,16 @@ describe('test', async () => {
     it('transaction', async () => {
       await query('CREATE table IF NOT EXISTS a (num int)');
       await query('CREATE table IF NOT EXISTS b (num int)');
-      assert.rejects(async () => {
+      await assert.rejects(async () => {
         await transaction(async (query: any) => {
           await Promise.all([
             query('INSERT INTO a VALUES($1)', ['text']),
             query('INSERT INTO b VALUES($1)', [1]),
           ]);
+          throw new Error("test reject")
         });
+      }, {
+        message: "test reject"
       });
 
       await transaction(async (query: any) => {
