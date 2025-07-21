@@ -6,14 +6,14 @@ import { it, describe } from 'node:test';
 const config = {
   session: {
     secret: {
-      refresh: "asnkmaskljkl12jkl12kjl12kl3j2l1k3jk1l23",
-      access: "asdasdasdasdijjkl12kl321jkl3",
+      refresh: 'asnkmaskljkl12jkl12kjl12kl3j2l1k3jk1l23',
+      access: 'asdasdasdasdijjkl12kl321jkl3',
     },
     duration: {
-      refresh: "7d",
-      access: "3d",
+      refresh: '7d',
+      access: '3d',
     },
-  }
+  },
 };
 
 const context = { npm: { jwt }, config } as any;
