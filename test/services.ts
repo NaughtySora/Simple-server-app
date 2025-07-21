@@ -72,16 +72,23 @@ describe('services', async () => {
   await describe('user service', async () => {
     await it('create', async () => {
       const mess = Math.random().toFixed(10).replace('.', '');
+      const email = `user${mess}@gmail.com`;
+      const nickname = `user${mess}`;
       const tokens = await services.user.create({
         password: `hash${mess}`,
-        email: `user${mess}@gmail.com`,
-        nickname: `user${mess}`,
+        email,
+        nickname,
       });
       assert.ok(typeof tokens.access === 'string');
       assert.ok(typeof tokens.refresh === 'string');
 
       it('get', async () => {
-        // const user = await services.user.get('');
+        //@ts-ignore - method only for testing for now
+        const { user_id } = await storage.repository.user._getByEmail(email);
+        const user = await services.user.get(user_id);
+        assert.strictEqual(user.nickname, nickname);
+        assert.strictEqual(user.email, email);
+        assert.ok(typeof user.id === "string");
       });
 
       await describe('validation service', async () => {
