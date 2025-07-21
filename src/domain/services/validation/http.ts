@@ -12,7 +12,7 @@ export default (context: DomainServicesDependencies) => {
   return {
     async bearer(headers: any) {
       const authorization = headers["authorization"];
-      if (!authorization === undefined) unauthorized();
+      if (authorization !== undefined) unauthorized();
       const parts = authorization.split(" ");
       const method = parts[0].toLowerCase();
       if (method !== "bearer") unauthorized();
