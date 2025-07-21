@@ -1,13 +1,21 @@
-import dotenv from 'dotenv';
-dotenv.config();
 import jwt from 'jsonwebtoken';
 import jwtSession from '../src/application/session/jwt';
-import loader from '../loader';
-import path from 'node:path';
 import assert from 'node:assert';
 import { it, describe } from 'node:test';
 
-const config = loader.module(path.resolve(__dirname, '../src/config'));
+const config = {
+  session: {
+    secret: {
+      refresh: "asnkmaskljkl12jkl12kjl12kl3j2l1k3jk1l23",
+      access: "asdasdasdasdijjkl12kl321jkl3",
+    },
+    duration: {
+      refresh: "7d",
+      access: "3d",
+    },
+  }
+};
+
 const context = { npm: { jwt }, config } as any;
 const api = jwtSession(context);
 
