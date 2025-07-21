@@ -1,5 +1,6 @@
 const storage = new Map();
 const primary = new Map();
+const emailIndex = new Map();
 
 export default {
   async create(data: Credentials) {
@@ -18,6 +19,18 @@ export default {
     };
     storage.set(id, user);
     primary.set(user_id, user);
+    emailIndex.set(user.email, user);
     return { id, userId: user_id };
+  },
+  async getById(id: string) {
+    const { nickname, email, user_id } = primary.get(id);
+    return {
+      nickname,
+      email,
+      id: user_id,
+    };
+  },
+  async _getByEmail(email: string) {
+    return emailIndex.get(email);
   },
 };

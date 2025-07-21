@@ -8,7 +8,7 @@ export default ({ npm, config, app, node, utils }: TransportDependencies) =>
     const PORT = config.server.http.port;
     const read = npm['naughty-util'].stream.read;
     const compose = npm['naughty-util'].async.compose;
-    const codes = node.http.STATUS_CODES;
+    const STATUSES = node.http.STATUS_CODES;
     const listen = app.logger.log.bind(
       null,
       `http server started on port ${PORT}`,
@@ -16,16 +16,12 @@ export default ({ npm, config, app, node, utils }: TransportDependencies) =>
     const methods = ['get', 'post', 'put', 'patch', 'delete'];
     const no_body_methods = ['trace', 'get', 'options'];
     const NetworkError = utils.NetworkError;
+    const CODES = utils.http.CODES;
     const HEADERS = {
       json: { 'Content-Type': 'application/json' },
     };
-    const CODES = {
-      badRequest: 400,
-      success: 200,
-      unsupportedMediaType: 415,
-    };
     const typeError = (type?: string) => {
-      const message = codes[CODES.unsupportedMediaType] as string;
+      const message = STATUSES[CODES.unsupportedMediaType] as string;
       throw new NetworkError(message, {
         code: CODES.unsupportedMediaType,
         details: { type },
@@ -45,12 +41,10 @@ export default ({ npm, config, app, node, utils }: TransportDependencies) =>
       }
       return void typeError();
     };
-    const serializers = npm['naughty-util'].abstract.factorify(
-      {
+    const serializers = npm['naughty-util']
+      .abstract.factorify({
         json: async (data: any) => JSON.stringify(data),
-      },
-      null,
-    );
+      }, null,);
     return {
       async start() {
         const http = express() as Express;
@@ -90,20 +84,23 @@ export default ({ npm, config, app, node, utils }: TransportDependencies) =>
                 if (code && parseInt(code, 10) <= 511) {
                   res.writeHead(code, HEADERS.json);
                   const error =
-                    e?.message ?? codes[code] ?? codes[CODES.badRequest];
+                    e?.message ?? STATUSES[code] ?? STATUSES[CODES.badRequest];
                   res.end(JSON.stringify({ error }));
                 } else {
                   res.writeHead(CODES.badRequest, HEADERS.json);
-                  res.end(JSON.stringify({ error: codes[CODES.badRequest] }));
+                  res.end(JSON.stringify({ error: STATUSES[CODES.badRequest] }));
                 }
               } catch {
                 res.writeHead(CODES.badRequest, HEADERS.json);
-                res.end(JSON.stringify({ error: codes[CODES.badRequest] }));
+                res.end(JSON.stringify({ error: STATUSES[CODES.badRequest] }));
               }
             }
           };
           http[method as keyof typeof http].call(http, path, listener);
         }
+        http.use((_, res) => {
+          res.status(CODES.notFound).send({ error: STATUSES[CODES.notFound] });
+        });
       },
       async stop(ms = 10000) {
         if (stopping) return;

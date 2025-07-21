@@ -149,6 +149,16 @@ declare global {
   interface Utils {
     DomainError: typeof DomainError;
     NetworkError: typeof NetworkError;
+    http: {
+      CODES: {
+        badRequest: number;
+        notFound: number;
+        unauthorized: number;
+        forbidden: number;
+        success: number;
+        unsupportedMediaType: number;
+      }
+    }
   }
 
   interface LowDependent {
@@ -184,10 +194,11 @@ declare global {
   interface StorageApi extends Restartable {
     repository: {
       user: {
-        create(query: any, data: Credentials): Promise<any>;
+        create(data: Credentials, query: any): Promise<any>;
+        getById(id: string, query: any)
       };
       session: {
-        create(query: any, data: { id: string } & Tokens): Promise<any>;
+        create(data: { id: string, tokens: Tokens }, query: any): Promise<any>;
       };
     };
     query: (...args: any) => Promise<any>;
@@ -213,11 +224,15 @@ declare global {
   interface DomainServices {
     user: {
       create(data: Credentials): Promise<any>;
+      get(id: string): Promise<User>;
     };
     validation: {
       user: {
         credentials(data: Credentials): void;
       };
+      http: {
+        bearer(headers: Record<string, string>): Promise<string>;
+      }
     };
   }
 
@@ -232,4 +247,4 @@ declare global {
   }
 }
 
-export {};
+export { };

@@ -1,4 +1,3 @@
-
 CREATE TABLE IF NOT EXISTS user_system (
   id serial PRIMARY KEY,
   user_id uuid NOT NULL UNIQUE DEFAULT gen_random_uuid(),
@@ -21,6 +20,9 @@ CREATE TABLE IF NOT EXISTS user_session (
   constraint pk_user_session primary key(access, refresh)
 );
 
+CREATE OR REPLACE VIEW user_view
+AS SELECT nickname, email, user_id as id FROM user_system;
+
 CREATE OR REPLACE FUNCTION refresh_update_at()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -30,13 +32,13 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE TRIGGER refresh_update_at
-BEFORE UPDATE 
+BEFORE UPDATE
 ON user_system
 FOR EACH ROW
 EXECUTE FUNCTION refresh_update_at();
 
 CREATE OR REPLACE TRIGGER refresh_update_at
-BEFORE UPDATE 
+BEFORE UPDATE
 ON user_session
 FOR EACH ROW
 EXECUTE FUNCTION refresh_update_at();

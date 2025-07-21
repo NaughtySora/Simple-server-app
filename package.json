@@ -11,7 +11,7 @@
     "start": "node dist/main.js",
     "test-dev": "nodemon test/index.ts",
     "test": "tsc && node dist/test/index.js",
-    "peek": "nodemon test/sandbox.ts",
+    "peek": "node test/sandbox.js",
     "lint": "npx eslint .",
     "prettify": "npx prettier . --write",
     "pretty-check": "npx prettier . --check"
