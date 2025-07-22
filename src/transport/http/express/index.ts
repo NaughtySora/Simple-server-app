@@ -41,10 +41,12 @@ export default ({ npm, config, app, node, utils }: TransportDependencies) =>
       }
       return void typeError();
     };
-    const serializers = npm['naughty-util']
-      .abstract.factorify({
+    const serializers = npm['naughty-util'].abstract.factorify(
+      {
         json: async (data: any) => JSON.stringify(data),
-      }, null,);
+      },
+      null,
+    );
     return {
       async start() {
         const http = express() as Express;
@@ -88,7 +90,9 @@ export default ({ npm, config, app, node, utils }: TransportDependencies) =>
                   res.end(JSON.stringify({ error }));
                 } else {
                   res.writeHead(CODES.badRequest, HEADERS.json);
-                  res.end(JSON.stringify({ error: STATUSES[CODES.badRequest] }));
+                  res.end(
+                    JSON.stringify({ error: STATUSES[CODES.badRequest] }),
+                  );
                 }
               } catch {
                 res.writeHead(CODES.badRequest, HEADERS.json);

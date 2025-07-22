@@ -1,6 +1,6 @@
-import server from "../../config/server";
-import storage from "../../config/storage";
-import session from "../../config/session";
+import server from '../../config/server';
+import storage from '../../config/storage';
+import session from '../../config/session';
 
 declare global {
   interface Config {
@@ -11,4 +11,4 @@ declare global {
   }
 }
 
-export { };
+export {};

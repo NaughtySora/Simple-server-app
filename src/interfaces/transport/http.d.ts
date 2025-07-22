@@ -15,16 +15,20 @@ declare global {
     modules: DomainModule;
   }
 
-  type RouteController =
-    <R extends IncomingMessage, RS extends ServerResponse>
-      ({ req: R, res: RS, data: any, }) => Promise<any>;
+  type RouteController = <
+    R extends IncomingMessage,
+    RS extends ServerResponse,
+  >({
+    req: R,
+    res: RS,
+    data: any,
+  }) => Promise<any>;
 
   type AsyncCallback = (
     ...args: any[]
   ) => Promise<{ response: any; meta?: HTTPResponseMeta }>;
 
-
   type HTTPModules = Record<string, Record<string, DomainModule>>;
 }
 
-export { };
+export {};
