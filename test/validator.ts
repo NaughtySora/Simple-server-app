@@ -1,10 +1,9 @@
 import validator from '../src/application/validator/jsonschema/user';
-import jsonschema from 'json-schema';
-import DomainError from '../src/utils/DomainError';
 import assert from 'node:assert';
 import { describe, it } from 'node:test';
+import { npm, utils } from './mocks';
 
-const context = { npm: { jsonschema }, utils: { DomainError } } as any;
+const context = { npm, utils } as any;
 const user = validator(context);
 
 describe('validator: [jsonschema]', () => {

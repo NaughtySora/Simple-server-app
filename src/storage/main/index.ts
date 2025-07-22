@@ -17,9 +17,9 @@ export default ({ npm, app, config }: TransportDependencies) => {
       pool = null;
       logger.log('postgres connection has been winded');
     },
-    query(...args: Postgres['QueryParameters']): Promise<any> {
+    query(...args: Partial<Postgres['QueryParameters']>): Promise<any> {
       if (!pool) throw new Error('postgres connection pool down');
-      return pool.query.apply(pool, args) as any;
+      return pool.query.apply(pool, args as any) as any;
     },
     async transaction(fn: (client: any) => Promise<any>) {
       const client = new npm.pg.Client(pg);

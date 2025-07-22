@@ -100,4 +100,5 @@ export {
   services_load,
   modules_load,
   routing_load,
+  paths,
 };

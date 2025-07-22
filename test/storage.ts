@@ -4,6 +4,7 @@ import { describe, it } from 'node:test';
 import { data_access_load } from '../bootstrap/application';
 import pg from 'pg';
 import assert from 'node:assert';
+import { storage } from './mocks';
 
 describe.skip('main - testing transaction critical section', async () => {
   const PG_CONFIG = {
@@ -53,18 +54,15 @@ describe.skip('main - testing transaction critical section', async () => {
 });
 
 describe('test - testing js map vs storage interface compatibility', async () => {
-  const { query, transaction, start } = data_access_load(
-    { storage: 'test' },
-    { app: { logger: console }, },
-  );
-  await start();
+  const mockStorage = storage();
+  await mockStorage.start();
 
   await describe('storage: [js map]', async () => {
     it('transaction', async () => {
-      await query('CREATE table IF NOT EXISTS a (num int)');
-      await query('CREATE table IF NOT EXISTS b (num int)');
+      await mockStorage.query('CREATE table IF NOT EXISTS a (num int)');
+      await mockStorage.query('CREATE table IF NOT EXISTS b (num int)');
       await assert.rejects(async () => {
-        await transaction(async (query: any) => {
+        await mockStorage.transaction(async (query: any) => {
           await Promise.all([
             query('INSERT INTO a VALUES($1)', ['text']),
             query('INSERT INTO b VALUES($1)', [1]),
@@ -75,7 +73,7 @@ describe('test - testing js map vs storage interface compatibility', async () =>
         message: "test reject"
       });
 
-      await transaction(async (query: any) => {
+      await mockStorage.transaction(async (query: any) => {
         const [a, b] = await Promise.all([
           query('SELECT num FROM a', { rows: { length: 0 } }),
           query('SELECT num FROM b', { rows: { length: 0 } }),
