@@ -45,4 +45,12 @@ export default {
       id: user.user_id,
     };
   },
+  async updatePassword(id: string, password: string) {
+    const user = primary.get(id);
+    user.password = password;
+  },
+  async getPasswordById(id: string) {
+    const user = primary.get(id);
+    return user.password ?? null;
+  }
 };

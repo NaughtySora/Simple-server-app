@@ -166,7 +166,11 @@ describe('modules', async () => {
       });
 
       await it('handler', async () => {
-
+        await reset[1]({
+          id,
+          desired: desiredPassword,
+          password: validCredentials.password
+        } as any);
       });
     });
   });
