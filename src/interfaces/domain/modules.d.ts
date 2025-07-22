@@ -1,5 +1,5 @@
-import userCreate from "../../domain/modules/user/create";
-import userGet from "../../domain/modules/user/get";
+import userCreate from '../../domain/modules/user/create';
+import userGet from '../../domain/modules/user/get';
 
 declare global {
   type DomainModule = [RouteController, ...AsyncCallback];
@@ -12,4 +12,4 @@ declare global {
   }
 }
 
-export { };
+export {};

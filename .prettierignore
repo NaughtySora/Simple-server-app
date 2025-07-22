@@ -1,3 +1,11 @@
 package.json
 package-lock.json
 dist
+test
+.github
+bootstrap
+eslint
+loader
+prettier.config
+README
+tsconfig

@@ -8,8 +8,8 @@ declare global {
     NetworkError: typeof NetworkError;
     http: {
       CODES;
-    }
+    };
   }
 }
 
-export { };
+export {};

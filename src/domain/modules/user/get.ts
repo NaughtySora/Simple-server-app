@@ -3,6 +3,6 @@ export default (services: DomainServices) => [
     return await services.validation.http.bearer(headers);
   },
   async (id: string) => {
-    return { response: await services.user.get(id), };
+    return { response: await services.user.get(id) };
   },
 ];

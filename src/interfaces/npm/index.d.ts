@@ -3,7 +3,7 @@ import jsonschema from '@types/json-schema';
 import utils from 'naughty-util';
 import express from 'express';
 import dotenv from 'dotenv';
-import pg from "pg";
+import pg from 'pg';
 
 declare global {
   interface Npm {
@@ -16,4 +16,4 @@ declare global {
   }
 }
 
-export { };
+export {};
