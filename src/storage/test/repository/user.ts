@@ -1,7 +1,7 @@
 const storage = new Map();
 const primary = new Map();
 const emailIndex = new Map();
-
+// all _function is for testing and shouldn't be implements in no testing interfaces.
 export default {
   async create(data: Credentials) {
     const { email, nickname, password } = data;
@@ -23,14 +23,26 @@ export default {
     return { id, userId: user_id };
   },
   async getById(id: string) {
-    const { nickname, email, user_id } = primary.get(id);
+    const user = primary.get(id);
+    if (!user) return null;
     return {
-      nickname,
-      email,
-      id: user_id,
+      nickname: user.nickname,
+      email: user.email,
+      id: user.user_id,
     };
   },
-  async _getByEmail(email: string) {
-    return emailIndex.get(email);
+  async getPasswordByEmail(email: string) {
+    const user = emailIndex.get(email);
+    if (!user) return null;
+    return user.password;
+  },
+  async getByEmail(email: string) {
+    const user = emailIndex.get(email);
+    if (!user) return null;
+    return {
+      nickname: user.nickname,
+      email: user.email,
+      id: user.user_id,
+    };
   },
 };

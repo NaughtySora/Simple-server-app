@@ -1,6 +1,6 @@
 import { describe, it } from 'node:test';
 import { services_load } from '../bootstrap/application';
-import { config, node, npm, storage, utils } from './mocks';
+import { config, data, node, npm, storage, utils } from './mocks';
 import assert from 'node:assert';
 import jwtSession from '../src/application/session/jwt';
 import jwt from 'jsonwebtoken';
@@ -42,9 +42,8 @@ describe('services', async () => {
       assert.ok(typeof tokens.refresh === 'string');
 
       it('get', async () => {
-        //@ts-ignore - method only for testing for now
-        const { user_id } = await mockStorage.repository.user._getByEmail(email);
-        const user = await services.user.get(user_id);
+        const { id } = await mockStorage.repository.user.getByEmail(email, () => { });
+        const user = await services.user.get(id);
         assert.strictEqual(user.nickname, nickname);
         assert.strictEqual(user.email, email);
         assert.ok(typeof user.id === "string");
@@ -52,13 +51,7 @@ describe('services', async () => {
 
       await describe('validation service', async () => {
         await it('http - bearer', async () => {
-          const tests = [
-            { task: {}, throws: true },
-            { task: { 'authorization': "" }, throws: true },
-            { task: { 'authorization': `Bearer ${tokens.access}` }, throws: false },
-            { task: { 'authorization': `notBearer ${tokens.access}` }, throws: true },
-          ];
-
+          const tests = data.http.bearer(tokens.access);
           const service = services.validation.http.bearer;
           for (const test of tests) {
             const data = test.task as any;
@@ -73,72 +66,13 @@ describe('services', async () => {
 
   await describe('validation service', async () => {
     it('user - credentials', () => {
-      const tests = [
-        { data: {}, throws: true },
-        { data: { email: 'test@gmail.com' }, throws: true },
-        {
-          data: {
-            email: 'test@gmail.com',
-            password: 'aA12312!3',
-          },
-          throws: true,
-        },
-        {
-          data: {
-            email: 'test@gmail.com',
-            password: 'aA12312!3',
-            nickname: '12',
-          },
-          throws: true,
-        },
-        {
-          data: {
-            email: 'test@gmail.com',
-            password: 'aA12312!3',
-            nickname: '12_',
-          },
-          throw: false,
-        },
-        {
-          data: {
-            email: 'test@gmail.com',
-            password: 'aA12312!3',
-            nickname: '1@2_',
-          },
-          throws: true,
-        },
-        {
-          data: {
-            email: 'testgmail.com',
-            password: 'aA12312!3',
-            nicnkame: 'testnickname',
-          },
-          throws: true,
-        },
-        {
-          data: {
-            email: 'testgmail.com',
-            password: 'aA12312!3',
-            nicnkame: '12345678901234567',
-          },
-          throws: true,
-        },
-        {
-          data: {
-            email: 'testgmail.com',
-            password: 'asdq3',
-            nickname: 'passA1!',
-          },
-          throws: true,
-        },
-      ];
       const service = services.validation.user.credentials;
-      for (const test of tests) {
+      for (const test of data.user.credentials) {
         const data = test.data as any;
         const throws = test.throws;
         if (throws) assert.throws(() => service(data));
         else service(data);
       }
     });
-  })
+  });
 });

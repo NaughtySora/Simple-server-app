@@ -1,6 +1,6 @@
 export default (services: DomainServices) => {
   return [
-    async ({ body }: { body: Credentials }) => {
+    async ({ body }: ControllerParameters<Credentials>) => {
       services.validation.user.credentials(body);
       return body;
     },

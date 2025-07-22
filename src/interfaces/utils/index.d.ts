@@ -1,14 +1,12 @@
 import DomainError from '../../utils/DomainError';
 import NetworkError from '../../utils/NetworkError';
-import { CODES } from '../../utils/http';
+import * as http from '../../utils/http';
 
 declare global {
   interface Utils {
     DomainError: typeof DomainError;
     NetworkError: typeof NetworkError;
-    http: {
-      CODES;
-    };
+    http: typeof http;
   }
 }
 

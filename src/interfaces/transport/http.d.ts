@@ -28,6 +28,12 @@ declare global {
     ...args: any[]
   ) => Promise<{ response: any; meta?: HTTPResponseMeta }>;
 
+  interface ControllerParameters<T> {
+    headers: Readonly<Record<string, string>>;
+    body: Readonly<T>;
+    params: Readonly<URLSearchParams>;
+  }
+
   type HTTPModules = Record<string, Record<string, DomainModule>>;
 }
 

@@ -32,12 +32,16 @@ export default ({ npm, config, app, node, utils }: TransportDependencies) =>
       const params = new URLSearchParams(req.query as Record<string, any>);
       const headers = Object.freeze(req.headers);
       if (no_body_methods.includes(method))
-        return { headers, body: {}, params };
+        return Object.freeze({ headers, body: Object.freeze({}), params });
       const type = headers['content-type'];
       if (!type || type.length === 0) return void typeError();
       if (type.startsWith('application/json')) {
         const buffer = await read(req);
-        return { headers, body: JSON.parse(buffer.toString()), params };
+        return Object.freeze({
+          headers,
+          body: Object.freeze(JSON.parse(buffer.toString())),
+          params,
+        });
       }
       return void typeError();
     };
