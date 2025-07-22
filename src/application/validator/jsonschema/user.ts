@@ -13,5 +13,6 @@ export default ({ npm, utils }: ApplicationDependencies) => {
   return {
     credentials: throwAble.bind(null, userSchema.credentials),
     login: throwAble.bind(null, userSchema.login),
+    password : throwAble.bind(null, userSchema.password),
   };
 };

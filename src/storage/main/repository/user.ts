@@ -28,4 +28,17 @@ export default {
     );
     return table?.rows?.[0] ?? null;
   },
+  async updatePassword(id: string, password: string, query: any) {
+    await query(
+      'UPDATE user_system SET password = $2 where user_id = $1',
+      [id, password],
+    );
+  },
+  async getPasswordById(id: string, query: any) {
+    const table = await query(
+      'SELECT password FROM user_system where user_id = $1',
+      [id],
+    );
+    return table?.rows?.[0] ?? null;
+  }
 };
