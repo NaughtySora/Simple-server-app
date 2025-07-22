@@ -40,7 +40,7 @@ export default ({ npm, config, app, node, utils }: TransportDependencies) =>
         return Object.freeze({
           headers,
           body: Object.freeze(JSON.parse(buffer.toString())),
-          params
+          params,
         });
       }
       return void typeError();

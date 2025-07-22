@@ -22,6 +22,6 @@ export default (context: DomainServicesDependencies) => {
           cause,
         });
       }
-    }
+    },
   };
 };

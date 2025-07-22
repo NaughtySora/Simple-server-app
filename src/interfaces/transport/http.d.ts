@@ -31,8 +31,8 @@ declare global {
   interface ControllerParameters<T> {
     headers: Readonly<Record<string, string>>;
     body: Readonly<T>;
-    params:  Readonly<URLSearchParams>;
-  };
+    params: Readonly<URLSearchParams>;
+  }
 
   type HTTPModules = Record<string, Record<string, DomainModule>>;
 }
