@@ -1,14 +1,19 @@
 export default (modules: HTTPModules) => {
   return [
     {
-      path: '/user/create',
+      path: '/user/register',
       method: 'post',
-      modules: modules.user.create,
+      modules: modules.user.register,
     },
     {
       path: '/user/get',
       method: 'get',
       modules: modules.user.get,
+    },
+    {
+      path: '/user/login',
+      method: 'get',
+      modules: modules.user.login,
     },
   ].sort((a: { path: string }, b: { path: string }) => {
     const aPath = a.path.includes(':');

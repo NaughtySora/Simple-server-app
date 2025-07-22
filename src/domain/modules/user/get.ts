@@ -1,8 +1,10 @@
 export default (services: DomainServices) => [
-  async ({ headers }: any) => {
+  async ({ headers }: ControllerParameters<{}>) => {
     return await services.validation.http.bearer(headers);
   },
   async (id: string) => {
-    return { response: await services.user.get(id) };
+    return {
+      response: await services.user.get(id),
+    };
   },
 ];

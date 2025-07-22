@@ -14,4 +14,18 @@ export default {
     );
     return table?.rows?.[0] ?? null;
   },
+  async getPasswordByEmail(email: string, query: any) {
+    const table = await query(
+      'SELECT password FROM user_system WHERE email = $1',
+      [email],
+    );
+    return table?.rows?.[0] ?? null;
+  },
+  async getByEmail(email: string, query: any) {
+    const table = await query(
+      'SELECT nickname, id, email, FROM user_view WHERE email = $1',
+      [email],
+    );
+    return table?.rows?.[0] ?? null;
+  },
 };

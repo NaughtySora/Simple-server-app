@@ -107,6 +107,50 @@ export const data = {
         throws: true,
       },
     ],
+    login: [
+      {
+        test: {
+          email: "email@gmail.com",
+          password: "hash",
+        },
+        throws: true,
+      },
+      {
+        test: {
+          email: "emailgmail.com",
+          password: "hash",
+        },
+        throws: true,
+      },
+      {
+        test: {
+          email: "emailgmail.com",
+        },
+        throws: true,
+      },
+      {
+        test: {},
+        throws: true,
+      },
+      {
+        test: {
+          password: "hash",
+        },
+        throws: true,
+      },
+      {
+        test: {
+          somefield: "string",
+        },
+        throws: true,
+      },
+      {
+        test: {
+          a: true,
+        },
+        throws: true,
+      },
+    ]
   },
   http: {
     bearer: (access: string) => [

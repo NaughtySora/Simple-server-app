@@ -42,9 +42,8 @@ describe('services', async () => {
       assert.ok(typeof tokens.refresh === 'string');
 
       it('get', async () => {
-        //@ts-ignore - method only for testing for now
-        const { user_id } = await mockStorage.repository.user._getByEmail(email);
-        const user = await services.user.get(user_id);
+        const { id } = await mockStorage.repository.user.getByEmail(email, () => { });
+        const user = await services.user.get(id);
         assert.strictEqual(user.nickname, nickname);
         assert.strictEqual(user.email, email);
         assert.ok(typeof user.id === "string");

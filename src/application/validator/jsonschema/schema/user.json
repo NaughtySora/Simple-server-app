@@ -1,6 +1,6 @@
 {
   "credentials": {
-    "$id": "user-create",
+    "$id": "/user/credentials",
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "title": "User credentials",
     "type": "object",
@@ -10,6 +10,7 @@
         "description": "password must be at least 8 symbols long up to 25, upper, lower, digits, and special symbols",
         "maxLength": 25,
         "minLength": 3,
+        "pattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^a-zA-Z0-9]).*$",
         "required": true
       },
       "email": {
@@ -24,6 +25,28 @@
         "maxLength": 25,
         "minLength": 3,
         "pattern": "^[A-Za-z0-9_]+$",
+        "required": true
+      }
+    }
+  },
+  "login": {
+    "$id": "/user/login",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "User credentials",
+    "type": "object",
+    "properties": {
+      "password": {
+        "type": "string",
+        "description": "password must be at least 8 symbols long up to 25, upper, lower, digits, and special symbols",
+        "maxLength": 25,
+        "minLength": 3,
+        "pattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^a-zA-Z0-9]).*$",
+        "required": true
+      },
+      "email": {
+        "type": "string",
+        "description": "email has to follow RFC 5321 standard",
+        "format": "email",
         "required": true
       }
     }

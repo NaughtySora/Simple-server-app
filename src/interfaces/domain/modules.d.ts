@@ -1,4 +1,4 @@
-import userCreate from '../../domain/modules/user/create';
+import userCreate from '../../domain/modules/user/register';
 import userGet from '../../domain/modules/user/get';
 
 declare global {

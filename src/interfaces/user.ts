@@ -9,3 +9,8 @@ interface User {
   email: string;
   nickname: string;
 }
+
+interface LoginCredentials {
+  email: string;
+  password: string;
+}
