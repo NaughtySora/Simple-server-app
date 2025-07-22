@@ -19,6 +19,7 @@ export default (context: DomainServicesDependencies) => {
       if (!token) unauthorized();
       try {
         const data = await session.decode(token);
+        console.log("data: ",data)
         const id = (data as any)?.data?.data?.id;
         if (typeof id !== 'string') throw new Error('id is not defined');
         return id;
