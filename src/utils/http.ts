@@ -5,4 +5,4 @@ export const CODES = {
   forbidden: 403,
   success: 200,
   unsupportedMediaType: 415,
-};
+} as const;

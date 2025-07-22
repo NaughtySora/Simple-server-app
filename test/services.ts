@@ -1,56 +1,13 @@
 import { describe, it } from 'node:test';
-import { data_access_load, services_load } from '../bootstrap/application';
+import { services_load } from '../bootstrap/application';
+import { config, node, npm, storage, utils } from './mocks';
 import assert from 'node:assert';
-import DomainError from '../src/utils/DomainError';
 import jwtSession from '../src/application/session/jwt';
 import jwt from 'jsonwebtoken';
 import scrypt from '../src/application/security/scrypt';
 import crypto from 'node:crypto';
-import * as http from "../src/utils/http";
 import loader from '../loader';
-import * as jsonschema from "json-schema";
 import path from 'node:path';
-
-const config = {
-  session: {
-    secret: {
-      refresh: 'asnkmaskljkl12jkl12kjl12kl3j2l1k3jk1l23',
-      access: 'asdasdasdasdijjkl12kl321jkl3',
-    },
-    duration: {
-      refresh: '7d',
-      access: '3d',
-    },
-  },
-};
-
-const storage = data_access_load(
-  { storage: 'test' },
-  { app: { logger: console } },
-) as StorageApi;
-
-const node = loader.node([
-  "util",
-  "url",
-  "timers",
-  "stream",
-  "process",
-  "perf_hooks",
-  "os",
-  "net",
-  "fs",
-  "events",
-  "crypto",
-  "console",
-  "child_process",
-  "cluster",
-  "buffer",
-  "path",
-  "http"
-]) as any;
-
-const utils = { DomainError, http };
-const npm = { jsonschema };
 
 const app = {
   session: jwtSession({ npm: { jwt }, config } as any),
@@ -61,13 +18,15 @@ const app = {
   ),
 };
 
+const mockStorage = storage();
+
 const services = services_load({
-  storage, app,
-  utils, node,
+  storage: mockStorage, app,
+  utils, node: node(),
 }) as DomainServices;
 
 describe('services', async () => {
-  await storage.start();
+  await mockStorage.start();
 
   await describe('user service', async () => {
     await it('create', async () => {
@@ -84,7 +43,7 @@ describe('services', async () => {
 
       it('get', async () => {
         //@ts-ignore - method only for testing for now
-        const { user_id } = await storage.repository.user._getByEmail(email);
+        const { user_id } = await mockStorage.repository.user._getByEmail(email);
         const user = await services.user.get(user_id);
         assert.strictEqual(user.nickname, nickname);
         assert.strictEqual(user.email, email);
