@@ -1,5 +1,5 @@
 import DomainError from '../../utils/DomainError';
-import NetworkError from '../../utils/DomainError';
+import NetworkError from '../../utils/NetworkError';
 import { CODES } from '../../utils/http';
 
 declare global {
