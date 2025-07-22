@@ -44,3 +44,76 @@ export const node = loader.node.bind(null, [
   "path",
   "http"
 ]) as any;
+
+
+export const data = {
+  user: {
+    credentials: [
+      { data: {}, throws: true },
+      { data: { email: 'test@gmail.com' }, throws: true },
+      {
+        data: {
+          email: 'test@gmail.com',
+          password: 'aA12312!3',
+        },
+        throws: true,
+      },
+      {
+        data: {
+          email: 'test@gmail.com',
+          password: 'aA12312!3',
+          nickname: '12',
+        },
+        throws: true,
+      },
+      {
+        data: {
+          email: 'test@gmail.com',
+          password: 'aA12312!3',
+          nickname: '12_',
+        },
+        throw: false,
+      },
+      {
+        data: {
+          email: 'test@gmail.com',
+          password: 'aA12312!3',
+          nickname: '1@2_',
+        },
+        throws: true,
+      },
+      {
+        data: {
+          email: 'testgmail.com',
+          password: 'aA12312!3',
+          nicnkame: 'testnickname',
+        },
+        throws: true,
+      },
+      {
+        data: {
+          email: 'testgmail.com',
+          password: 'aA12312!3',
+          nicnkame: '12345678901234567',
+        },
+        throws: true,
+      },
+      {
+        data: {
+          email: 'testgmail.com',
+          password: 'asdq3',
+          nickname: 'passA1!',
+        },
+        throws: true,
+      },
+    ],
+  },
+  http: {
+    bearer: (access: string) => [
+      { task: {}, throws: true },
+      { task: { 'authorization': "" }, throws: true },
+      { task: { 'authorization': `Bearer ${access}` }, throws: false },
+      { task: { 'authorization': `notBearer ${access}` }, throws: true },
+    ],
+  }
+};
