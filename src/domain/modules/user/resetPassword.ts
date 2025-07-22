@@ -7,7 +7,7 @@ export default (services: DomainServices) => [
       services.validation.user.password(password),
       services.validation.user.password(desired),
     ]);
-    return { id, password, desired, };
+    return { id, password, desired };
   },
   async (data: UserResetPassword & { id: string }) => {
     const actual = await services.user.getPasswordById(data.id);
