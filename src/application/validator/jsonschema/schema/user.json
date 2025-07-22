@@ -32,7 +32,7 @@
   "login": {
     "$id": "/user/login",
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "title": "User credentials",
+    "title": "User login credentials",
     "type": "object",
     "properties": {
       "password": {
@@ -50,5 +50,16 @@
         "required": true
       }
     }
+  },
+  "password": {
+    "$id": "/user/password",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "User password",
+    "type": "string",
+    "description": "password must be at least 8 symbols long up to 25, upper, lower, digits, and special symbols",
+    "maxLength": 25,
+    "minLength": 3,
+    "pattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^a-zA-Z0-9]).*$",
+    "required": true
   }
 }

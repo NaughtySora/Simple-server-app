@@ -11,6 +11,7 @@ import path from 'node:path';
 import registerUser from "../src/domain/modules/user/register";
 import getUser from "../src/domain/modules/user/get";
 import loginUser from "../src/domain/modules/user/login";
+import resetPassword from "../src/domain/modules/user/resetPassword";
 
 const validator = loader.module(
   path.resolve(__dirname, "../src/application/validator/jsonschema"),
@@ -130,6 +131,46 @@ describe('modules', async () => {
           assert.ok(typeof result.response.nickname === "string");
           assert.ok(typeof result.response.id === "string");
         }
+      });
+    });
+
+    await it('reset password', async () => {
+      const reset = resetPassword(services);
+      const create = registerUser(services);
+      const login = loginUser(services);
+      const createHandler = create[1] as any;
+      const loginHandler = login[1] as any;
+      const validCredentials = {
+        email: "pretty@gmail.com",
+        nickname: "prettyGood",
+        password: "asdxSasA6-623#!",
+      };
+      const desiredPassword = "1234567Aa!";
+      await createHandler(validCredentials);
+      const user = (await loginHandler(validCredentials)).response;
+      const id = user.id;
+      const session = { email: validCredentials.email, id, };
+      const access = await app.session.access(session);
+      const payload = {
+        headers: {
+          "authorization": `Bearer ${access}`,
+        },
+        body: {
+          email: validCredentials.email,
+          password: validCredentials.password,
+          desired: desiredPassword,
+        },
+      };
+      await it('controller', async () => {
+        await reset[0](payload as any);
+      });
+
+      await it('handler', async () => {
+        await reset[1]({
+          id,
+          desired: desiredPassword,
+          password: validCredentials.password
+        } as any);
       });
     });
   });

@@ -14,3 +14,8 @@ interface LoginCredentials {
   email: string;
   password: string;
 }
+
+interface UserResetPassword {
+  password: string;
+  desired: string;
+}
