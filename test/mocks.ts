@@ -1,4 +1,4 @@
-import loader from "../loader";
+import loader from "naughty-loader";
 import * as jsonschema from "json-schema";
 import * as http from "../src/utils/http";
 import DomainError from '../src/utils/DomainError';
