@@ -17,7 +17,7 @@ const app = {
     { context: { npm, utils } },
   ),
 };
-console.log({ app })
+
 const mockStorage = storage();
 
 const services = services_load({
