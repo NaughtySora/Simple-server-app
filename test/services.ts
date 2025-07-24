@@ -17,9 +17,9 @@ const app = {
     { context: { npm, utils } },
   ),
 };
-
+console.log({ app })
 const mockStorage = storage();
-console.log({ mockStorage })
+
 const services = services_load({
   shared: {
     context: {
@@ -28,8 +28,6 @@ const services = services_load({
     }
   }
 });
-
-console.log({ services })
 
 describe('services', async () => {
   await mockStorage.start();
