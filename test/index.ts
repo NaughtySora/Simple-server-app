@@ -5,4 +5,5 @@ require('./session');
 require('./validator');
 require('./storage');
 require('./services');
-// require('./modules');
+require('./modules');
+process.exit(0);
