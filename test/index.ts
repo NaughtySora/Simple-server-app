@@ -1,7 +1,4 @@
-process.on('uncaughtException', () => {
-  console.log(null, 'ERROR: ');
-  process.exit(0);
-})
+'use strict';
 
 require('./security');
 require('./session');
