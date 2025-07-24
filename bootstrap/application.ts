@@ -1,4 +1,4 @@
-import loader from '../loader';
+import loader from 'naughty-loader';
 import path from 'node:path';
 import bootstrap from './config.json';
 
@@ -36,7 +36,12 @@ const app_services_load = (bootstrap: any, context: any) => {
   for (const name of Object.keys(load)) {
     const implementation = load[name];
     const module_path = path.resolve(paths.application, name, implementation);
-    api[name] = loader.module(module_path, context);
+    const module = loader.module(module_path, { context });
+    if (Object.keys(module).length === 1 && module.index !== undefined) {
+      api[name] = module.index;
+    } else {
+      api[name] = module;
+    }
   }
   return api;
 };
@@ -47,14 +52,14 @@ const transport_load = (bootstrap: any, context: any) => {
   for (const name of Object.keys(load)) {
     const implementation = load[name];
     const module_path = path.resolve(paths.transport, name, implementation);
-    api[name] = loader.module(module_path, context);
+    api[name] = loader.root(module_path, { context });
   }
   return api;
 };
 
 const data_access_load = (bootstrap: any, context: any) => {
   const module_path = path.resolve(paths.storage, bootstrap.storage);
-  const root = loader.module(module_path, context);
+  const root = loader.root(module_path, { context });
   const repository = loader.module(path.resolve(module_path, 'repository'));
   return Object.freeze(Object.assign({}, root, { repository }));
 };
@@ -74,13 +79,17 @@ const application = () => {
   const transport = transport_load(bootstrap, context);
   const storage = data_access_load(bootstrap, context);
   const services = services_load({
-    ...independent,
-    storage,
-    app,
-    utils: low_dependent.utils,
+    shared: {
+      context: {
+        ...independent,
+        storage,
+        app,
+        utils: low_dependent.utils,
+      }
+    }
   });
-  const modules = modules_load(services);
-  const routing = routing_load(modules);
+  const modules = modules_load({ shared: { context: services } });
+  const routing = routing_load({ context: modules });
   return {
     modules,
     transport,

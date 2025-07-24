@@ -6,7 +6,7 @@ import jwtSession from '../src/application/session/jwt';
 import jwt from 'jsonwebtoken';
 import scrypt from '../src/application/security/scrypt';
 import crypto from 'node:crypto';
-import loader from '../loader';
+import loader from 'naughty-loader';
 import path from 'node:path';
 
 const app = {
@@ -14,16 +14,20 @@ const app = {
   security: scrypt({ node: { crypto } } as any),
   validator: loader.module(
     path.resolve(__dirname, "../src/application/validator/jsonschema"),
-    { npm, utils },
+    { context: { npm, utils } },
   ),
 };
 
 const mockStorage = storage();
 
 const services = services_load({
-  storage: mockStorage, app,
-  utils, node: node(),
-}) as DomainServices;
+  shared: {
+    context: {
+      storage: mockStorage, app,
+      utils, node: node(),
+    }
+  }
+});
 
 describe('services', async () => {
   await mockStorage.start();
