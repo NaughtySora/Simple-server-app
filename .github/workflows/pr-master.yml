@@ -19,6 +19,7 @@ jobs:
       - run: npm i
       - run: npm run pretty-check
       - run: npm run lint
+      - run: tsc
       - run: ls -la dist
       - run: ls -la dist/test
       - run: npm run test -- --reporter=spec
