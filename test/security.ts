@@ -6,11 +6,13 @@ import { describe, it } from 'node:test';
 const context = { node: { crypto } } as any;
 const api = scrypt(context);
 
-describe('security: [scrypt]', () => {
-  const password = '12346aA14323!!@#';
-  it('hashing/compare', async () => {
-    const hash = await api.hash(password);
-    const isValid = await api.compare(password, hash);
-    assert.ok(isValid);
+(async () => {
+  await describe('security: [scrypt]', async () => {
+    const password = '12346aA14323!!@#';
+    await it('hashing/compare', async () => {
+      const hash = await api.hash(password);
+      const isValid = await api.compare(password, hash);
+      assert.ok(isValid);
+    });
   });
-});
+})();

@@ -6,4 +6,4 @@ require('./validator');
 require('./storage');
 require('./services');
 require('./modules');
-process.exit(0);
+
