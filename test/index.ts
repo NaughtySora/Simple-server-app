@@ -3,6 +3,6 @@
 require('./security');
 require('./session');
 require('./validator');
-// require('./storage');
+require('./storage');
 // require('./services');
 // require('./modules');
